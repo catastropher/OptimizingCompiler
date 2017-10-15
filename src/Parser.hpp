@@ -27,6 +27,8 @@ private:
     ExpressionNode* parseTerm();
     ExpressionNode* parseFactor();
     
+    void throwErrorAtCurrentLocation(std::string errorMessage);
+    
     std::vector<Token>& tokens;
     int currentTokenId;
     Token lastToken;

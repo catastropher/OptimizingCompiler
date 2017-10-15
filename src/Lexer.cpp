@@ -7,7 +7,7 @@
 Lexer::Lexer(std::string inputString_)
     : inputString(inputString_),
     currentLine(1),
-    currentCol(0)
+    currentCol(1)
 {
     begin = &inputString[0];
     end = &inputString[inputString.length()];

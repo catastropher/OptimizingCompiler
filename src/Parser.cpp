@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "Parser.hpp"
 
 Parser::Parser(std::vector<Token>& tokens_)
@@ -41,7 +43,7 @@ ExpressionNode* Parser::parseFactor()
     
     if(currentToken().type != TOK_NUMBER)
     {
-        throw "Expected number factor";
+        throwErrorAtCurrentLocation("Expected number factor");
     }
     
     FactorNode* newNode = ast.newIntegerNode(atoi(currentToken().value.c_str()));
@@ -67,5 +69,12 @@ ExpressionNode* Parser::parseTerm()
     }
     
     return result;
+}
+
+void Parser::throwErrorAtCurrentLocation(std::string errorMessage)
+{
+    std::cerr << "Error on line " << currentToken().line << ", col " << currentToken().col << ": " << errorMessage << std::endl;
+    
+    throw "Error in parsing";
 }
 

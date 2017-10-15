@@ -9,7 +9,7 @@ int main()
 {
     try
     {
-        std::string input = "5 + -2";
+        std::string input = "1 + 2 + 5 + x";
         
         Lexer lexer(input);
         std::vector<Token>& tokens = lexer.lexTokens();
