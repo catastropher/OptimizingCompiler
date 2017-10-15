@@ -13,7 +13,8 @@ struct AstNode
 
 struct ExpressionNode : AstNode
 {
-    ExpressionNode* value;
+    virtual int tryEvaluate() { throw "Can't evaluate expression"; }
+    
     virtual ~ExpressionNode() { }
 };
 
@@ -26,6 +27,8 @@ struct IntegerNode : FactorNode
 {
     IntegerNode(int value_) : value(value_) { }
     
+    int tryEvaluate() { return value; }
+    
     int value;
 };
 
@@ -33,6 +36,24 @@ struct BinaryOpNode : ExpressionNode
 {
     BinaryOpNode(ExpressionNode* left_, TokenType op_, ExpressionNode* right_)
         : left(left_), op(op_), right(right_) { }
+    
+    int tryEvaluate()
+    {
+        int a = left->tryEvaluate();
+        int b = right->tryEvaluate();
+        
+        switch(op)
+        {
+            case TOK_ADD: return a + b;
+            case TOK_SUB: return a - b;
+            case TOK_MUL: return a * b;
+            case TOK_DIV: return a / b;
+            case TOK_MOD: return a % b;
+            default: break;
+        }
+        
+        throw "Can't evaluate op";
+    }
     
     ExpressionNode* left;
     TokenType op;
@@ -47,7 +68,7 @@ struct UnaryOpNode : ExpressionNode
 
 class Ast
 {
-private:
+public:
     IntegerNode* newIntegerNode(int value)
     {
         IntegerNode* newNode = new IntegerNode(value);
@@ -73,6 +94,7 @@ private:
             delete node;
     }
     
+private:
     std::vector<AstNode*> nodes;
 };
 

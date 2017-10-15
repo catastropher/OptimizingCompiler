@@ -9,7 +9,7 @@ class Lexer
 public:
     Lexer(std::string inputString_);
     
-    void lexTokens();
+    std::vector<Token>& lexTokens();
     
 private:
     void addToken(const char* tokenEnd, TokenType type);

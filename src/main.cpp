@@ -3,14 +3,19 @@
 #include "Lexer.hpp"
 #include "File.hpp"
 #include "Ast.hpp"
+#include "Parser.hpp"
 
 int main()
 {
     try
     {
-        std::string input = readFileContents("../src/movingedge.txt");
+        std::string input = "5 * 3 % 4";
+        
         Lexer lexer(input);
-        lexer.lexTokens();
+        std::vector<Token>& tokens = lexer.lexTokens();
+        
+        Parser parser(tokens);
+        parser.parse();
     }
     catch(const char* str)
     {

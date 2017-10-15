@@ -11,7 +11,7 @@ Lexer::Lexer::Lexer(std::string inputString_)
     end = &inputString[inputString.length()];
 }
 
-void Lexer::lexTokens()
+std::vector<Token>& Lexer::lexTokens()
 {
     while(lexNextToken()) ;
     
@@ -19,6 +19,8 @@ void Lexer::lexTokens()
     {
         std::cout << "Token '" << t.value << "': type " << (int)t.type << "\n";
     }
+    
+    return tokens;
 }
 
 void Lexer::addToken(const char* tokenEnd, TokenType type)
