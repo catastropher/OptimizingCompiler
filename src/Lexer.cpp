@@ -62,6 +62,9 @@ bool Lexer::lexNextToken()
     if(lexOperator())
         return true;
     
+    if(lexString())
+        return true;
+    
     throwErrorAtCurrentLocation("Unexpected token");
     return false;
 }
@@ -194,6 +197,27 @@ bool Lexer::lexAssignOperator()
     return true;
 }
 
+bool Lexer::lexString()
+{
+    if(*begin != '"')
+        return false;
+    
+    const char* tokenEnd = begin;
+    
+    do
+    {
+        ++tokenEnd;
+    }
+    while(tokenEnd < end && *tokenEnd != '\n' && *tokenEnd != '"');
+    
+    if(*tokenEnd != '"')
+        throwErrorAtCurrentLocation("Unterminated '\"'");
+    
+    addToken(tokenEnd + 1, TOK_STRING);
+    
+    return true;
+}
+
 std::string Lexer::currentLineAndColumn()
 {
     int line = 1;
@@ -247,7 +271,7 @@ void Lexer::throwErrorAtCurrentLocation(std::string errorMessage)
     std::cerr << "Error on " << currentLineAndColumn() << ": " << errorMessage << std::endl;
     printCurrentLine();
     
-    throw std::runtime_error("Error in lexing");
+    throw "Error in lexing";
 }
 
 

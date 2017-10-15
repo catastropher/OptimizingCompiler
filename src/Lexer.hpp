@@ -30,6 +30,8 @@ private:
     bool lexAssignOperator();
     bool lexBracketOperator();
     
+    bool lexString();
+    
     std::string currentLineAndColumn();
     void printCurrentLine();
     void throwErrorAtCurrentLocation(std::string errorMessage);
