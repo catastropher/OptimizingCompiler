@@ -2,7 +2,7 @@
 
 int main()
 {
-    std::string input = "for idx = 0 to bound - 1 by 1";
+    std::string input = "while (list[5] < bound)";
     
     Lexer lexer(input);
     

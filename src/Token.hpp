@@ -38,7 +38,8 @@ enum TokenType
     TOK_BY,
     TOK_TO,
     TOK_LPAREN,
-    TOK_RPAREN
+    TOK_RPAREN,
+    TOK_WHILE
 };
 
 struct Token

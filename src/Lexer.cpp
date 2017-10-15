@@ -110,7 +110,8 @@ bool Lexer::lexOperator()
 {
     return lexComparisonOperator() ||
         lexArithmeticOperator() ||
-        lexAssignOperator();
+        lexAssignOperator() ||
+        lexBracketOperator();
 }
 
 bool Lexer::lexComparisonOperator()
@@ -132,6 +133,18 @@ bool Lexer::lexComparisonOperator()
     
     return true;
 }
+
+bool Lexer::lexBracketOperator()
+{
+    if(*begin != '[' && *begin != ']' && *begin != '(' && *begin != ')')
+        return false;
+    
+    std::string op = std::string(begin, begin + 1);
+    addToken(begin + 1, Token::getOperatorType(op));
+    
+    return true;
+}
+
 
 bool Lexer::lexArithmeticOperator()
 {

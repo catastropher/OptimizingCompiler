@@ -22,6 +22,7 @@ private:
     bool lexComparisonOperator();
     bool lexArithmeticOperator();
     bool lexAssignOperator();
+    bool lexBracketOperator();
     
     std::string currentLineAndColumn();
     void printCurrentLine();

@@ -5,23 +5,24 @@
 
 static std::map<std::string, TokenType> languageKeywords = 
 {
-    { "let", TOK_LET },
-    { "title", TOK_TITLE },
     { "begin", TOK_BEGIN },
+    { "by", TOK_BY },
     { "end", TOK_END },
-    { "var", TOK_VAR },
-    { "int", TOK_INT },
-    { "list", TOK_LIST },
-    { "rem", TOK_REM },
-    { "label", TOK_LABEL },
-    { "if", TOK_IF },
-    { "then", TOK_THEN },
-    { "goto", TOK_GOTO },
-    { "input", TOK_INPUT },
-    { "prompt", TOK_PROMPT },
     { "for", TOK_FOR },
+    { "goto", TOK_GOTO },
+    { "if", TOK_IF },
+    { "input", TOK_INPUT },
+    { "int", TOK_INT },
+    { "label", TOK_LABEL },
+    { "let", TOK_LET },
+    { "list", TOK_LIST },
+    { "prompt", TOK_PROMPT },
+    { "rem", TOK_REM },
+    { "then", TOK_THEN },
+    { "title", TOK_TITLE },
     { "to", TOK_TO },
-    { "by", TOK_BY }
+    { "var", TOK_VAR },
+    { "while", TOK_WHILE }
 };
 
 static std::map<std::string, TokenType> operators = 
