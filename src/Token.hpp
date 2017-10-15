@@ -49,10 +49,14 @@ enum TokenType
 
 struct Token
 {
-    Token(TokenType type_, std::string value_) : type(type_), value(value_) { }
+    Token(TokenType type_, std::string value_, int line_, int col_)
+        : type(type_), value(value_), line(line_), col(col_) { }
     
     TokenType type;
     std::string value;
+    
+    int line;
+    int col;
     
     static TokenType getKeywordType(std::string keyword);
     static TokenType getOperatorType(std::string op);

@@ -79,6 +79,16 @@ struct UnaryOpNode : ExpressionNode
     TokenType op;
 };
 
+struct VarDeclNode : AstNode
+{
+    std::string name;
+};
+
+struct IntDeclNode : AstNode
+{
+    
+};
+
 class Ast
 {
 public:

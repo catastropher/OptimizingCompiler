@@ -41,5 +41,8 @@ private:
     
     const char* begin;
     const char* end;
+    
+    int currentLine;
+    int currentCol;
 };
 

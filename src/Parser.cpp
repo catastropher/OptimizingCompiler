@@ -3,7 +3,7 @@
 Parser::Parser(std::vector<Token>& tokens_)
     : tokens(tokens_),
     currentTokenId(0),
-    lastToken(Token(TOK_INVALID, ""))
+    lastToken(Token(TOK_INVALID, "", -1, -1))
 {
     
 }
@@ -68,6 +68,4 @@ ExpressionNode* Parser::parseTerm()
     
     return result;
 }
-
-
 

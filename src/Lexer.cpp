@@ -4,8 +4,10 @@
 
 #include "Lexer.hpp"
 
-Lexer::Lexer::Lexer(std::string inputString_)
-    : inputString(inputString_)
+Lexer::Lexer(std::string inputString_)
+    : inputString(inputString_),
+    currentLine(1),
+    currentCol(0)
 {
     begin = &inputString[0];
     end = &inputString[inputString.length()];
@@ -28,8 +30,8 @@ void Lexer::addToken(const char* tokenEnd, TokenType type)
     if(type == TOK_INVALID)
         throwErrorAtCurrentLocation("Programmer error: bad token type");
     
-    tokens.push_back(Token(type, std::string(begin, tokenEnd)));
-    begin = tokenEnd;    
+    tokens.push_back(Token(type, std::string(begin, tokenEnd), currentLine, currentCol));
+    advanceTo(tokenEnd);
 }
 
 Token& Lexer::getLastToken()
@@ -42,7 +44,18 @@ Token& Lexer::getLastToken()
 
 void Lexer::advanceTo(const char* advancePos)
 {
-    begin = advancePos;
+    while(begin < advancePos)
+    {
+        ++currentCol;
+        
+        if(*begin == '\n')
+        {
+            ++currentLine;
+            currentCol = 1;
+        }
+        
+        ++begin;
+    }
 }
 
 bool Lexer::lexNextToken()
@@ -74,7 +87,7 @@ bool Lexer::lexNextToken()
 void Lexer::consumeWhitespace()
 {
     while(*begin == ' ' || *begin == '\t' || *begin == '\n' || *begin == '\r')
-        ++begin;    
+        advanceTo(begin + 1);    
 }
 
 bool Lexer::lexNumber()
@@ -178,7 +191,6 @@ bool Lexer::lexBracketOperator()
     return true;
 }
 
-
 bool Lexer::lexArithmeticOperator()
 {
     if(*begin != '+' && *begin != '-' && *begin != '/' && *begin != '*' && *begin != '%')
@@ -266,7 +278,6 @@ void Lexer::printCurrentLine()
     
     std::cerr << "^\n";
 }
-
 
 void Lexer::throwErrorAtCurrentLocation(std::string errorMessage)
 {
