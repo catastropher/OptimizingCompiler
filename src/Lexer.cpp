@@ -13,15 +13,14 @@ Lexer::Lexer::Lexer(std::string inputString_)
 
 void Lexer::lexTokens()
 {
-    lexNextToken();
+    while(lexNextToken()) ;
 }
 
 void Lexer::addToken(const char* tokenEnd, TokenType type)
 {
     tokens.push_back(Token(type, std::string(begin, tokenEnd)));
-    begin = tokenEnd + 1;
+    begin = tokenEnd;    
 }
-
 
 bool Lexer::lexNextToken()
 {
@@ -31,6 +30,12 @@ bool Lexer::lexNextToken()
         return false;
     
     if(lexNumber())
+        return true;
+    
+    if(lexId())
+        return true;
+    
+    if(lexOperator())
         return true;
     
     throwErrorAtCurrentLocation("Unexpected token");
@@ -56,6 +61,70 @@ bool Lexer::lexNumber()
     } while(isdigit(*tokenEnd));
     
     addToken(tokenEnd, TOK_NUMBER);
+    
+    return true;
+}
+
+bool Lexer::lexId()
+{
+    if(!isalpha(*begin))
+        return false;
+    
+    const char* tokenEnd = begin;
+    
+    do
+    {
+        ++tokenEnd;
+    } while(isalpha(*tokenEnd) || isdigit(*tokenEnd));
+    
+    addToken(tokenEnd, TOK_ID);
+    
+    return true;
+}
+
+bool Lexer::lexOperator()
+{
+    return lexComparisonOperator() ||
+        lexArithmeticOperator() ||
+        lexAssignOperator();
+}
+
+bool Lexer::lexComparisonOperator()
+{
+    if(*begin != '=' && *begin != '<' && *begin != '>')
+        return false;
+    
+    const char* tokenEnd = begin + 1;
+    
+    if(*tokenEnd == '=')
+        ++tokenEnd;
+    
+    std::string op = std::string(begin, tokenEnd);
+    
+    if(op == "=")
+        return false;
+    
+    addToken(tokenEnd, Token::getComparisonOperatorType(op));
+    
+    return true;
+}
+
+bool Lexer::lexArithmeticOperator()
+{
+    if(*begin != '+' && *begin != '-' && *begin != '/' && *begin != '*' && *begin != '%')
+        return false;
+    
+    addToken(begin + 1, Token::getArithmeticOperatorType(std::string(begin, begin + 1)));
+    
+    return true;
+}
+
+bool Lexer::lexAssignOperator()
+{
+    if(*begin != '=')
+        return false;
+    
+    addToken(begin + 1, TOK_ASSIGN);
     
     return true;
 }

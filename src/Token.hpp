@@ -31,7 +31,8 @@ enum TokenType
     TOK_DIV,
     TOK_MOD,
     TOK_NUMBER,
-    TOK_ID
+    TOK_ID,
+    TOK_ASSIGN
 };
 
 struct Token
@@ -40,5 +41,45 @@ struct Token
     
     TokenType type;
     std::string value;
+    
+    static TokenType getComparisonOperatorType(std::string op)
+    {
+        if(op == "<")
+            return TOK_LT;
+        
+        if(op == ">")
+            return TOK_GT;
+        
+        if(op == "==")
+            return TOK_EQ;
+        
+        if(op == "<=")
+            return TOK_LE;
+        
+        if(op == ">=")
+            return TOK_GE;
+        
+        throw "Invalid comparsion operator type";
+    }
+    
+    static TokenType getArithmeticOperatorType(std::string op)
+    {
+        if(op == "+")
+            return TOK_ADD;
+        
+        if(op == "-")
+            return TOK_SUB;
+        
+        if(op == "/")
+            return TOK_DIV;
+        
+        if(op == "*")
+            return TOK_MUL;
+        
+        if(op == "%")
+            return TOK_MOD;
+        
+        throw "Invalid arithmetic operator type";
+    }
 };
 

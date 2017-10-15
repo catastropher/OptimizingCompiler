@@ -2,7 +2,7 @@
 
 int main()
 {
-    std::string input = "    12345";
+    std::string input = "let x = 5";
     
     Lexer lexer(input);
     

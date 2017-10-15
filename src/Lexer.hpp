@@ -13,7 +13,14 @@ private:
     void addToken(const char* tokenEnd, TokenType type);
     bool lexNextToken();
     void consumeWhitespace();
+    
     bool lexNumber();
+    bool lexId();
+    
+    bool lexOperator();
+    bool lexComparisonOperator();
+    bool lexArithmeticOperator();
+    bool lexAssignOperator();
     
     std::string currentLineAndColumn();
     void printCurrentLine();
