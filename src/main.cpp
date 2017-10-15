@@ -2,6 +2,7 @@
 
 #include "Lexer.hpp"
 #include "File.hpp"
+#include "Ast.hpp"
 
 int main()
 {

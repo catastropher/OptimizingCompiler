@@ -274,5 +274,3 @@ void Lexer::throwErrorAtCurrentLocation(std::string errorMessage)
     throw "Error in lexing";
 }
 
-
-

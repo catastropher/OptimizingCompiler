@@ -8,5 +8,6 @@ add_executable(compiler
     src/File.cpp
     src/Lexer.cpp
     src/main.cpp
+    src/Parser.cpp
     src/Token.cpp
 )
