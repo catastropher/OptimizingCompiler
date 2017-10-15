@@ -7,7 +7,9 @@ static std::map<std::string, TokenType> languageKeywords =
 {
     { "begin", TOK_BEGIN },
     { "by", TOK_BY },
+    { "endfor", TOK_ENDFOR },
     { "end", TOK_END },
+    { "endwhile", TOK_ENDWHILE },
     { "for", TOK_FOR },
     { "goto", TOK_GOTO },
     { "if", TOK_IF },
