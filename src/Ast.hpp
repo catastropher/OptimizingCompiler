@@ -62,6 +62,19 @@ struct BinaryOpNode : ExpressionNode
 
 struct UnaryOpNode : ExpressionNode
 {
+    UnaryOpNode(ExpressionNode* value_, TokenType op_) : value(value_), op(op_) { }
+    
+    int tryEvaluate()
+    {
+        if(op == TOK_ADD)
+            return value->tryEvaluate();
+        
+        if(op == TOK_SUB)
+            return -value->tryEvaluate();
+        
+        throw "Invalid unary op";
+    }
+    
     ExpressionNode* value;
     TokenType op;
 };
@@ -79,6 +92,13 @@ public:
     BinaryOpNode* newBinaryOpNode(ExpressionNode* left, TokenType op, ExpressionNode* right)
     {
         BinaryOpNode* newNode = new BinaryOpNode(left, op, right);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    UnaryOpNode* newUnaryOpNode(ExpressionNode* value, TokenType op)
+    {
+        UnaryOpNode* newNode = new UnaryOpNode(value, op);
         addNode(newNode);
         return newNode;
     }

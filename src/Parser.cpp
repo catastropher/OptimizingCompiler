@@ -15,32 +15,46 @@ void Parser::parse()
 
 ExpressionNode* Parser::Parser::parseExpression()
 {
-    if(currentToken().type == TOK_SUB || currentToken().type == TOK_ADD)
+    ExpressionNode* result = parseTerm();
+    
+    while(currentToken().type == TOK_ADD || currentToken().type == TOK_SUB)
     {
-        printf("Unary operator!\n");
+        TokenType op = currentToken().type;
+        nextToken();
+        ExpressionNode* right = parseTerm();
+        
+        result = ast.newBinaryOpNode(result, op, right);
     }
     
-    return parseTerm();
+    return result;
 }
 
-FactorNode* Parser::parseFactor()
+ExpressionNode* Parser::parseFactor()
 {
+    TokenType unaryOp = TOK_INVALID;
+    
+    if(currentToken().type == TOK_ADD || currentToken().type == TOK_SUB)
+    {
+        unaryOp = currentToken().type;
+        nextToken();
+    }
+    
     if(currentToken().type != TOK_NUMBER)
     {
-        throw "Expected integer for factor";
+        throw "Expected number factor";
     }
     
     FactorNode* newNode = ast.newIntegerNode(atoi(currentToken().value.c_str()));
     nextToken();
+    
+    if(unaryOp != TOK_INVALID)
+        return ast.newUnaryOpNode(newNode, unaryOp);
     
     return newNode;
 }
 
 ExpressionNode* Parser::parseTerm()
 {
-    if(currentToken().type != TOK_NUMBER)
-        return nullptr;
-    
     ExpressionNode* result = parseFactor();
     
     while(currentToken().type == TOK_MUL || currentToken().type == TOK_DIV || currentToken().type == TOK_MOD)

@@ -13,12 +13,19 @@ public:
     void parse();
     
 private:
-    Token& currentToken() { return tokens[currentTokenId]; }
+    Token& currentToken()
+    {
+        if(currentTokenId < (int)tokens.size())
+            return tokens[currentTokenId];
+        
+        return lastToken;
+    }
+                
     void nextToken() { ++currentTokenId; }
     
     ExpressionNode* parseExpression();
     ExpressionNode* parseTerm();
-    FactorNode* parseFactor();
+    ExpressionNode* parseFactor();
     
     std::vector<Token>& tokens;
     int currentTokenId;
