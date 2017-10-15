@@ -29,12 +29,14 @@ enum TokenType
     TOK_SUB,
     TOK_MUL,
     TOK_DIV,
-    TOK_MOD
+    TOK_MOD,
+    TOK_NUMBER,
+    TOK_ID
 };
 
 struct Token
 {
-    Token(TokenType type_, std::string value_) : type(type), value(value_) { }
+    Token(TokenType type_, std::string value_) : type(type_), value(value_) { }
     
     TokenType type;
     std::string value;
