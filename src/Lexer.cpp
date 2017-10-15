@@ -30,6 +30,19 @@ void Lexer::addToken(const char* tokenEnd, TokenType type)
     begin = tokenEnd;    
 }
 
+Token& Lexer::getLastToken()
+{
+    if(tokens.size() == 0)
+        throw "Trying to get last token when no takes have been lexed yet";
+    
+    return tokens[tokens.size() - 1];
+}
+
+void Lexer::advanceTo(const char* advancePos)
+{
+    begin = advancePos;
+}
+
 bool Lexer::lexNextToken()
 {
     consumeWhitespace();
@@ -78,7 +91,7 @@ bool Lexer::lexNumber()
 
 bool Lexer::lexId()
 {
-    if(!isalpha(*begin))
+    if(!isalpha(*begin) && *begin != '_')
         return false;
     
     const char* tokenEnd = begin;
@@ -86,7 +99,7 @@ bool Lexer::lexId()
     do
     {
         ++tokenEnd;
-    } while(isalpha(*tokenEnd) || isdigit(*tokenEnd));
+    } while(isalpha(*tokenEnd) || isdigit(*tokenEnd) || *tokenEnd == '_');
     
     addToken(tokenEnd, TOK_ID);
     
@@ -95,14 +108,29 @@ bool Lexer::lexId()
 
 void Lexer::changeLastTokenTypeIfKeyword()
 {
-    if(tokens.size() == 0)
-        return;
-    
-    Token& lastToken = tokens[tokens.size() - 1];
+    Token& lastToken = getLastToken();
     TokenType keywordType = Token::getKeywordType(lastToken.value);
     
     if(keywordType != TOK_INVALID)
         lastToken.type = keywordType;
+    
+    printf("Keyword: %s\n", lastToken.value.c_str());
+    
+    if(keywordType == TOK_REM || keywordType == TOK_TITLE)
+        lexComment();
+}
+
+void Lexer::lexComment()
+{
+    consumeWhitespace();
+    
+    const char* tokenEnd = begin;
+    
+    while(tokenEnd < end && *tokenEnd != '\n')
+        ++tokenEnd;
+    
+    getLastToken().value = std::string(begin, tokenEnd);
+    advanceTo(tokenEnd);
 }
 
 

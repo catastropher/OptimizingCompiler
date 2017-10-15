@@ -1,3 +1,5 @@
+#pragma once
+
 #include <vector>
 
 #include "Token.hpp"
@@ -13,10 +15,14 @@ private:
     void addToken(const char* tokenEnd, TokenType type);
     bool lexNextToken();
     void consumeWhitespace();
+    Token& getLastToken();
+    void advanceTo(const char* advancePos);
     
     bool lexNumber();
     bool lexId();
     void changeLastTokenTypeIfKeyword();
+    void lexTitle();
+    void lexComment();
     
     bool lexOperator();
     bool lexComparisonOperator();

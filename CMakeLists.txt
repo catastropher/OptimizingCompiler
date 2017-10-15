@@ -5,7 +5,8 @@ project(compiler)
 set(CMAKE_CXX_FLAGS "-O2 -Wall")
 
 add_executable(compiler
+    src/File.cpp
     src/Lexer.cpp
-	src/main.cpp
-	src/Token.cpp
+    src/main.cpp
+    src/Token.cpp
 )
