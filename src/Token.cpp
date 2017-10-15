@@ -38,7 +38,9 @@ static std::map<std::string, TokenType> operators =
     { "-", TOK_SUB },
     { "/", TOK_DIV },
     { "*", TOK_MUL },
-    { "%", TOK_MOD }
+    { "%", TOK_MOD },
+    { "(", TOK_LPAREN },
+    { ")", TOK_RPAREN }
 };
 
 TokenType Token::getKeywordType(std::string keyword)

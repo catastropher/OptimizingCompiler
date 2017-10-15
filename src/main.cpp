@@ -2,7 +2,7 @@
 
 int main()
 {
-    std::string input = "let x = 5";
+    std::string input = "for idx = 0 to bound - 1 by 1";
     
     Lexer lexer(input);
     

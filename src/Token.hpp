@@ -36,7 +36,9 @@ enum TokenType
     TOK_ASSIGN,
     TOK_FOR,
     TOK_BY,
-    TOK_TO
+    TOK_TO,
+    TOK_LPAREN,
+    TOK_RPAREN
 };
 
 struct Token
