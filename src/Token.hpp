@@ -2,6 +2,7 @@
 
 enum TokenType
 {
+    TOK_INVALID,
     TOK_TITLE,
     TOK_BEGIN,
     TOK_END,
@@ -32,7 +33,10 @@ enum TokenType
     TOK_MOD,
     TOK_NUMBER,
     TOK_ID,
-    TOK_ASSIGN
+    TOK_ASSIGN,
+    TOK_FOR,
+    TOK_BY,
+    TOK_TO
 };
 
 struct Token
@@ -42,44 +46,7 @@ struct Token
     TokenType type;
     std::string value;
     
-    static TokenType getComparisonOperatorType(std::string op)
-    {
-        if(op == "<")
-            return TOK_LT;
-        
-        if(op == ">")
-            return TOK_GT;
-        
-        if(op == "==")
-            return TOK_EQ;
-        
-        if(op == "<=")
-            return TOK_LE;
-        
-        if(op == ">=")
-            return TOK_GE;
-        
-        throw "Invalid comparsion operator type";
-    }
-    
-    static TokenType getArithmeticOperatorType(std::string op)
-    {
-        if(op == "+")
-            return TOK_ADD;
-        
-        if(op == "-")
-            return TOK_SUB;
-        
-        if(op == "/")
-            return TOK_DIV;
-        
-        if(op == "*")
-            return TOK_MUL;
-        
-        if(op == "%")
-            return TOK_MOD;
-        
-        throw "Invalid arithmetic operator type";
-    }
+    static TokenType getKeywordType(std::string keyword);
+    static TokenType getOperatorType(std::string op);
 };
 

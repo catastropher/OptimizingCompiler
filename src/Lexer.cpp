@@ -14,10 +14,18 @@ Lexer::Lexer::Lexer(std::string inputString_)
 void Lexer::lexTokens()
 {
     while(lexNextToken()) ;
+    
+    for(Token t : tokens)
+    {
+        std::cout << "Token '" << t.value << "': type " << (int)t.type << "\n";
+    }
 }
 
 void Lexer::addToken(const char* tokenEnd, TokenType type)
 {
+    if(type == TOK_INVALID)
+        throwErrorAtCurrentLocation("Programmer error: bad token type");
+    
     tokens.push_back(Token(type, std::string(begin, tokenEnd)));
     begin = tokenEnd;    
 }
@@ -33,7 +41,10 @@ bool Lexer::lexNextToken()
         return true;
     
     if(lexId())
+    {
+        changeLastTokenTypeIfKeyword();
         return true;
+    }
     
     if(lexOperator())
         return true;
@@ -82,6 +93,19 @@ bool Lexer::lexId()
     return true;
 }
 
+void Lexer::changeLastTokenTypeIfKeyword()
+{
+    if(tokens.size() == 0)
+        return;
+    
+    Token& lastToken = tokens[tokens.size() - 1];
+    TokenType keywordType = Token::getKeywordType(lastToken.value);
+    
+    if(keywordType != TOK_INVALID)
+        lastToken.type = keywordType;
+}
+
+
 bool Lexer::lexOperator()
 {
     return lexComparisonOperator() ||
@@ -104,7 +128,7 @@ bool Lexer::lexComparisonOperator()
     if(op == "=")
         return false;
     
-    addToken(tokenEnd, Token::getComparisonOperatorType(op));
+    addToken(tokenEnd, Token::getOperatorType(op));
     
     return true;
 }
@@ -114,7 +138,7 @@ bool Lexer::lexArithmeticOperator()
     if(*begin != '+' && *begin != '-' && *begin != '/' && *begin != '*' && *begin != '%')
         return false;
     
-    addToken(begin + 1, Token::getArithmeticOperatorType(std::string(begin, begin + 1)));
+    addToken(begin + 1, Token::getOperatorType(std::string(begin, begin + 1)));
     
     return true;
 }

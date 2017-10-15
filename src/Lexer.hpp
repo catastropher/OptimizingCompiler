@@ -16,6 +16,7 @@ private:
     
     bool lexNumber();
     bool lexId();
+    void changeLastTokenTypeIfKeyword();
     
     bool lexOperator();
     bool lexComparisonOperator();
