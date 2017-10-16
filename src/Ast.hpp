@@ -141,6 +141,15 @@ struct IntLValueNode : LValueNode
     IntDeclNode* var;
 };
 
+struct OneDimensionalListLValueNode : LValueNode
+{
+    OneDimensionalListLValueNode(OneDimensionalListDecl* var_, ExpressionNode* index_)
+        : var(var_), index(index_) { }
+        
+    OneDimensionalListDecl* var;
+    ExpressionNode* index;
+};
+
 struct LetStatementNode : StatementNode
 {
     LetStatementNode(LValueNode* leftSide_, ExpressionNode* rightSide_) : leftSide(leftSide_), rightSide(rightSide_) { }
@@ -267,6 +276,13 @@ public:
     IntLValueNode* addIntLValue(IntDeclNode* varDecl)
     {
         IntLValueNode* newNode = new IntLValueNode(varDecl);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    OneDimensionalListLValueNode* addOneDimensionalListLValueNode(OneDimensionalListDecl* var, ExpressionNode* index)
+    {
+        auto newNode = new OneDimensionalListLValueNode(var, index);
         addNode(newNode);
         return newNode;
     }

@@ -3,5 +3,8 @@ var
     int x
     list[50] y
 begin
-    let x = y[10] + y[20][4]
+    let y[4] = y[x * 3 + 5] - y[3] % x
+    
+    for y[2] = 5 to 3 by 1
+    endfor
 end

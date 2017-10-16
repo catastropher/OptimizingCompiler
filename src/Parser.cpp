@@ -225,10 +225,32 @@ LValueNode* Parser::parseLValue()
     if(!var)
         throwErrorAtCurrentLocation("No such variable " + name);
     
+    bool arrayAccess = peekNextToken().type == TOK_LSQUARE_BRACKET;
+    
     if(IntDeclNode* intVar = dynamic_cast<IntDeclNode*>(var))
     {
+        if(arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " does not have list type");
+        
         nextToken();
         return ast.addIntLValue(intVar);
+    }
+    
+    if(OneDimensionalListDecl* listVar = dynamic_cast<OneDimensionalListDecl*>(var))
+    {
+        if(!arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " has array type - expected '['");
+        
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        ExpressionNode* index = parseExpression();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        return ast.addOneDimensionalListLValueNode(listVar, index);
     }
         
     throwErrorAtCurrentLocation("Variable " + name + " is not of integer type");
