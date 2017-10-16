@@ -29,6 +29,7 @@ private:
     }
                 
     void nextToken() { ++currentTokenId; }
+    void prevToken() { if(currentTokenId > 0) --currentTokenId; }
     
     ExpressionNode* parseExpression();
     ExpressionNode* parseTerm();
@@ -36,6 +37,12 @@ private:
     
     bool parseVarDecl();
     void parseHeader();
+    
+    StatementNode* parseStatement();
+    LValueNode* parseLValue();
+    LetStatementNode* parseLetStatement();
+    
+    CodeBlockNode* parseCodeBlock(TokenType endToken);
     
     void throwErrorAtCurrentLocation(std::string errorMessage);
     

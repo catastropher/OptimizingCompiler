@@ -13,6 +13,7 @@ Parser::Parser(std::vector<Token>& tokens_)
 void Parser::parse()
 {
     parseHeader();
+    ast.setBody(parseCodeBlock(TOK_END));
 }
 
 ExpressionNode* Parser::Parser::parseExpression()
@@ -142,6 +143,76 @@ void Parser::parseHeader()
         }
     } while(true);
 }
+
+StatementNode* Parser::parseStatement()
+{
+    if(currentToken().type == TOK_INVALID)
+        return nullptr;
+    
+    switch(currentToken().type)
+    {
+        case TOK_LET:
+            return parseLetStatement();
+        
+        default:
+            break;
+    }
+    
+    throwErrorAtCurrentLocation("Expected statement");
+    return nullptr;
+}
+
+LValueNode* Parser::parseLValue()
+{
+    // TODO: add parsing of array accesses
+    expectType(TOK_ID);
+    
+    std::string name = currentToken().value;
+    VarDeclNode* var = ast.getVarByName(name);
+    
+    if(!var)
+        throwErrorAtCurrentLocation("No such variable " + name);
+    
+    if(IntDeclNode* intVar = dynamic_cast<IntDeclNode*>(var))
+    {
+        nextToken();
+        return ast.addIntLValue(intVar);
+    }
+        
+    throwErrorAtCurrentLocation("Variable " + name + " is not of integer type");
+    return nullptr;
+}
+
+LetStatementNode* Parser::parseLetStatement()
+{
+    nextToken();
+    LValueNode* leftSide = parseLValue();
+    
+    expectType(TOK_ASSIGN);
+    nextToken();
+    
+    ExpressionNode* rightSide = parseExpression();
+    
+    return ast.addLetStatementNode(leftSide, rightSide);
+}
+
+CodeBlockNode* Parser::parseCodeBlock(TokenType endToken)
+{
+    CodeBlockNode* block = ast.addCodeBlockNode();
+    
+    while(currentToken().type != endToken && currentToken().type != TOK_INVALID)
+        block->addStatement(parseStatement());
+    
+    // TODO add name of ending token
+    if(currentToken().type != endToken)
+    {
+        prevToken();
+        throwErrorAtCurrentLocation("Expected end of code block");
+    }
+    
+    return block;
+}
+
 
 
 

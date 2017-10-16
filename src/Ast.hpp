@@ -104,6 +104,41 @@ struct OneDimensionalListDecl : VarDeclNode
     int totalElements;
 };
 
+struct StatementNode : AstNode
+{
+    
+};
+
+struct LValueNode : AstNode
+{
+    
+};
+
+struct IntLValueNode : LValueNode
+{
+    IntLValueNode(IntDeclNode* var_) : var(var_) { }
+    
+    IntDeclNode* var;
+};
+
+struct LetStatementNode : StatementNode
+{
+    LetStatementNode(LValueNode* leftSide_, ExpressionNode* rightSide_) : leftSide(leftSide_), rightSide(rightSide_) { }
+    
+    LValueNode* leftSide;
+    ExpressionNode* rightSide;
+};
+
+struct CodeBlockNode : AstNode
+{
+    void addStatement(StatementNode* node)
+    {
+        statements.push_back(node);
+    }
+    
+    std::vector<StatementNode*> statements;
+};
+
 class Ast
 {
 public:
@@ -144,9 +179,41 @@ public:
         return newNode;
     }
     
-    void addNode(AstNode* node)
+    IntLValueNode* addIntLValue(IntDeclNode* varDecl)
     {
-        nodes.push_back(node);
+        IntLValueNode* newNode = new IntLValueNode(varDecl);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    LetStatementNode* addLetStatementNode(LValueNode* leftSide, ExpressionNode* rightSide)
+    {
+        LetStatementNode* newNode = new LetStatementNode(leftSide, rightSide);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    CodeBlockNode* addCodeBlockNode()
+    {
+        CodeBlockNode* newNode = new CodeBlockNode;
+        addNode(newNode);
+        return newNode;
+    }
+    
+    VarDeclNode* getVarByName(std::string name)
+    {
+        for(VarDeclNode* var : vars)
+        {
+            if(var->name == name)
+                return var;
+        }
+        
+        return nullptr;
+    }
+    
+    void setBody(CodeBlockNode* body_)
+    {
+        body = body_;
     }
     
     ~Ast()
@@ -159,7 +226,13 @@ public:
     }
     
 private:
+    void addNode(AstNode* node)
+    {
+        nodes.push_back(node);
+    }
+    
     std::vector<AstNode*> nodes;
     std::vector<VarDeclNode*> vars;
+    CodeBlockNode* body;
 };
 

@@ -9,7 +9,7 @@ int main()
 {
     try
     {
-        std::string input = readFileContents("../src/movingedge.txt");
+        std::string input = readFileContents("../src/test.txt");
         
         Lexer lexer(input);
         std::vector<Token>& tokens = lexer.lexTokens();
