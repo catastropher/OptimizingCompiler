@@ -37,7 +37,7 @@ void Lexer::addToken(const char* tokenEnd, TokenType type)
 Token& Lexer::getLastToken()
 {
     if(tokens.size() == 0)
-        throw "Trying to get last token when no takes have been lexed yet";
+        throw "Trying to get last token when no tokens have been lexed yet";
     
     return tokens[tokens.size() - 1];
 }

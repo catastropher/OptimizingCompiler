@@ -12,7 +12,7 @@ Parser::Parser(std::vector<Token>& tokens_)
 
 void Parser::parse()
 {
-    printf("Value: %d\n", parseExpression()->tryEvaluate());
+    parseHeader();
 }
 
 ExpressionNode* Parser::Parser::parseExpression()
@@ -77,4 +77,71 @@ void Parser::throwErrorAtCurrentLocation(std::string errorMessage)
     
     throw "Error in parsing";
 }
+
+bool Parser::parseVarDecl()
+{    
+    if(currentToken().type == TOK_INT)
+    {
+        nextToken();
+        expectType(TOK_ID);
+        ast.addIntegerVar(currentToken().value, currentToken().line, currentToken().col);
+        nextToken();
+        return true;
+    }
+    
+    if(currentToken().type == TOK_LIST)
+    {
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        expectType(TOK_NUMBER);        
+        int totalElements = atoi(currentToken().value.c_str());
+        nextToken();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        expectType(TOK_ID);
+        
+        ast.add1DListVar(currentToken().value, currentToken().line, currentToken().col, totalElements);
+        nextToken();
+        
+        return true;
+    }
+    
+    return false;
+}
+
+void Parser::parseHeader()
+{
+    do
+    {
+        if(currentToken().type == TOK_VAR)
+        {
+            nextToken();
+            while(parseVarDecl()) ;
+        }
+        else if(currentToken().type == TOK_BEGIN)
+        {
+            nextToken();
+            return;
+        }
+        else if(currentToken().type == TOK_TITLE)
+        {
+            std::cout << "Title: " << currentToken().value << std::endl;
+            nextToken();
+        }
+        else if(currentToken().type == TOK_REM)
+        {
+            nextToken();
+        }
+        else
+        {
+            throwErrorAtCurrentLocation("Unexpected token: " + currentToken().value);
+        }
+    } while(true);
+}
+
+
 

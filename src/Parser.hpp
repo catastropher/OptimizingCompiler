@@ -20,12 +20,22 @@ private:
         
         return lastToken;
     }
+    
+    void expectType(TokenType expectedType)
+    {
+        // TODO: name the tokens and print what was expected
+        if(currentToken().type != expectedType)
+            throwErrorAtCurrentLocation("Unexpected token: " + currentToken().value);
+    }
                 
     void nextToken() { ++currentTokenId; }
     
     ExpressionNode* parseExpression();
     ExpressionNode* parseTerm();
     ExpressionNode* parseFactor();
+    
+    bool parseVarDecl();
+    void parseHeader();
     
     void throwErrorAtCurrentLocation(std::string errorMessage);
     

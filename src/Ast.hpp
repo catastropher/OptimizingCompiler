@@ -81,12 +81,27 @@ struct UnaryOpNode : ExpressionNode
 
 struct VarDeclNode : AstNode
 {
+    VarDeclNode(std::string name_, int line_, int col_)
+        : name(name_), line(line_), col(col_) { }
+    
     std::string name;
+    int line;
+    int col;
 };
 
-struct IntDeclNode : AstNode
+struct IntDeclNode : VarDeclNode
 {
+    IntDeclNode(std::string name_, int line_, int col_)
+        : VarDeclNode(name_, line_, col_) { }
+};
+
+struct OneDimensionalListDecl : VarDeclNode
+{
+    OneDimensionalListDecl(std::string name_, int line_, int col_, int totalElements_)
+        : VarDeclNode(name_, line_, col_),
+        totalElements(totalElements_) { }
     
+    int totalElements;
 };
 
 class Ast
@@ -113,6 +128,22 @@ public:
         return newNode;
     }
     
+    IntDeclNode* addIntegerVar(std::string name, int line, int col)
+    {
+        IntDeclNode* newNode = new IntDeclNode(name, line, col);
+        vars.push_back(newNode);
+        printf("Added new int var: %s\n", name.c_str());
+        return newNode;
+    }
+    
+    OneDimensionalListDecl* add1DListVar(std::string name, int line, int col, int totalElements)
+    {
+        OneDimensionalListDecl* newNode = new OneDimensionalListDecl(name, line, col, totalElements);
+        vars.push_back(newNode);
+        printf("Added new int 1D list of size %d: %s\n", totalElements, name.c_str());
+        return newNode;
+    }
+    
     void addNode(AstNode* node)
     {
         nodes.push_back(node);
@@ -122,9 +153,13 @@ public:
     {
         for(AstNode* node : nodes)
             delete node;
+        
+        for(VarDeclNode* node : vars)
+            delete node;
     }
     
 private:
     std::vector<AstNode*> nodes;
+    std::vector<VarDeclNode*> vars;
 };
 
