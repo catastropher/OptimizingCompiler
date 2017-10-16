@@ -18,6 +18,7 @@ static std::map<std::string, TokenType> languageKeywords =
     { "label", TOK_LABEL },
     { "let", TOK_LET },
     { "list", TOK_LIST },
+    { "print", TOK_PRINT },
     { "prompt", TOK_PROMPT },
     { "rem", TOK_REM },
     { "then", TOK_THEN },

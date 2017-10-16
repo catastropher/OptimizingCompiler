@@ -219,6 +219,27 @@ struct IfNode : StatementNode
     StatementNode* body;
 };
 
+struct PrintNode : StatementNode
+{
+    PrintNode(ExpressionNode* value_) : value(value_) { }
+    
+    ExpressionNode* value;
+};
+
+struct PromptNode : StatementNode
+{
+    PromptNode(std::string str_) : str(str_) { }
+    
+    std::string str;
+};
+
+struct InputNode : StatementNode
+{
+    InputNode(LValueNode* var_) : var(var_) { }
+    
+    LValueNode* var;
+};
+
 class Ast
 {
 public:
@@ -332,6 +353,27 @@ public:
     IfNode* addIfNode(ExpressionNode* condition, StatementNode* body_)
     {
         auto newNode = new IfNode(condition, body_);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    InputNode* addInputNode(LValueNode* var)
+    {
+        auto newNode = new InputNode(var);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    PromptNode* addPromptNode(std::string str)
+    {
+        auto newNode = new PromptNode(str);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    PrintNode* addPrintNode(ExpressionNode* value)
+    {
+        auto newNode = new PrintNode(value);
         addNode(newNode);
         return newNode;
     }

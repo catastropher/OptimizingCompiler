@@ -3,8 +3,6 @@ var
     int x
     list[50] y
 begin
-    let y[4] = y[x * 3 + 5] - y[3] % x
-    
-    for y[2] = 5 to 3 by 1
-    endfor
+    prompt "Hello there"
+    input y[3]
 end

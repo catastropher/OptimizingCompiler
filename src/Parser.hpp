@@ -67,6 +67,10 @@ private:
     GotoNode* parseGoto();
     LabelNode* parseLabel();
     
+    PrintNode* parsePrint();
+    PromptNode* parsePrompt();
+    InputNode* parseInput();
+    
     ExpressionNode* parseCondition();
     
     void throwErrorAtCurrentLocation(std::string errorMessage);

@@ -205,6 +205,9 @@ StatementNode* Parser::parseStatement()
         case TOK_LABEL:     return parseLabel();
         case TOK_WHILE:     return parseWhileLoop();
         case TOK_IF:        return parseIf();
+        case TOK_PROMPT:    return parsePrompt();
+        case TOK_PRINT:     return parsePrint();
+        case TOK_INPUT:     return parseInput();
         
         default:
             break;
@@ -373,7 +376,7 @@ ExpressionNode* Parser::parseCondition()
     return ast.newBinaryOpNode(leftSide, op, rightSide);
 }
 
-IfNode * Parser::parseIf()
+IfNode* Parser::parseIf()
 {
     nextToken();
     
@@ -390,6 +393,29 @@ IfNode * Parser::parseIf()
     return ast.addIfNode(condition, body);
 }
 
+PromptNode* Parser::parsePrompt()
+{
+    nextToken();
+    expectType(TOK_STRING);
+    
+    std::string value = currentToken().value;
+    nextToken();
+    
+    return ast.addPromptNode(value);
+}
 
+PrintNode* Parser::parsePrint()
+{
+    nextToken();
+    
+    ExpressionNode* expression = parseExpression();
+    return ast.addPrintNode(expression);
+}
 
+InputNode* Parser::parseInput()
+{
+    nextToken();
+    LValueNode* dest = parseLValue();
+    return ast.addInputNode(dest);
+}
 
