@@ -3,7 +3,7 @@
 
 #include "Token.hpp"
 
-static std::map<std::string, TokenType> languageKeywords = 
+static std::map<std::string, TokenType> languageKeywords =
 {
     { "begin", TOK_BEGIN },
     { "by", TOK_BY },
@@ -28,7 +28,7 @@ static std::map<std::string, TokenType> languageKeywords =
     { "while", TOK_WHILE }
 };
 
-static std::map<std::string, TokenType> operators = 
+static std::map<std::string, TokenType> operators =
 {
     { "==", TOK_EQ },
     { "!=", TOK_NE },
@@ -53,11 +53,56 @@ bool Token::isComparisonOperator(TokenType type)
     return type == TOK_EQ || type == TOK_LT || type == TOK_GT || type == TOK_LE || type == TOK_GE || type == TOK_NE;
 }
 
+static std::map<TokenType, std::string> tokenNames =
+{
+    { TOK_INVALID, "INVALID" },
+    { TOK_TITLE, "title" },
+    { TOK_BEGIN, "begin" },
+    { TOK_END, "end" },
+    { TOK_VAR, "var" },
+    { TOK_INT, "int" },
+    { TOK_LIST, "list" },
+    { TOK_LSQUARE_BRACKET, "[" },
+    { TOK_RSQUARE_BRACKET, "]" },
+    { TOK_REM, "comment (rem)" },
+    { TOK_LABEL, "label" },
+    { TOK_LET, "let" },
+    { TOK_IF, "if" },
+    { TOK_THEN, "then" },
+    { TOK_GOTO, "goto" },
+    { TOK_INPUT, "input"},
+    { TOK_PRINT, "print"},
+    { TOK_PROMPT, "prompt"},
+    { TOK_EQ,"==" },
+    { TOK_NE, "!="},
+    { TOK_LT, "<" },
+    { TOK_GT, ">" },
+    { TOK_LE, "<="},
+    { TOK_GE, ">="},
+    { TOK_ADD, "+"},
+    { TOK_SUB, "-"},
+    { TOK_MUL, "*"},
+    { TOK_DIV, "/"},
+    { TOK_MOD, "%"},
+    { TOK_NUMBER, "number"},
+    { TOK_ID, "Identifier"},
+    { TOK_ASSIGN, "=" },
+    { TOK_FOR, "for" },
+    { TOK_BY, "by" },
+    { TOK_TO, "to" },
+    { TOK_LPAREN, "(" },
+    { TOK_RPAREN, ")" },
+    { TOK_WHILE, "while" },
+    { TOK_ENDFOR, "endfor" },
+    { TOK_ENDWHILE, "endwhile"},
+    { TOK_STRING, "string"}
+};
+
 TokenType Token::getKeywordType(std::string keyword)
 {
     if(languageKeywords.count(keyword) != 0)
         return languageKeywords[keyword];
-    
+
     return TOK_INVALID;
 }
 
@@ -65,7 +110,13 @@ TokenType Token::getOperatorType(std::string op)
 {
     if(operators.count(op) != 0)
         return operators[op];
-    
+
     return TOK_INVALID;
 }
 
+std::string Token::getTokenName(TokenType inToken)
+{
+    if (tokenNames.count(inToken)!= 0)
+        return tokenNames[inToken];
+    return tokenNames[TOK_INVALID];
+}
