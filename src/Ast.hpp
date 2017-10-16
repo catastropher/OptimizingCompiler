@@ -32,6 +32,15 @@ struct IntegerNode : FactorNode
     int value;
 };
 
+struct IntDeclNode;
+
+struct IntVarFactor : FactorNode
+{
+    IntVarFactor(IntDeclNode* var_) : var(var_) { }
+    
+    IntDeclNode* var;
+};
+
 struct BinaryOpNode : ExpressionNode
 {
     BinaryOpNode(ExpressionNode* left_, TokenType op_, ExpressionNode* right_)
@@ -196,6 +205,13 @@ public:
     IntegerNode* newIntegerNode(int value)
     {
         IntegerNode* newNode = new IntegerNode(value);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    IntVarFactor* addIntVarFactor(IntDeclNode* var)
+    {
+        auto newNode = new IntVarFactor(var);
         addNode(newNode);
         return newNode;
     }

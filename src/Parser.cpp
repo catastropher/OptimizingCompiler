@@ -42,13 +42,30 @@ ExpressionNode* Parser::parseFactor()
         nextToken();
     }
     
-    if(currentToken().type != TOK_NUMBER)
-    {
-        throwErrorAtCurrentLocation("Expected number factor");
-    }
+    FactorNode* newNode = NULL;
     
-    FactorNode* newNode = ast.newIntegerNode(atoi(currentToken().value.c_str()));
-    nextToken();
+    if(currentToken().type == TOK_NUMBER)
+    {
+        newNode = ast.newIntegerNode(atoi(currentToken().value.c_str()));
+        nextToken();
+    }
+    else if(currentToken().type == TOK_ID)
+    {
+        VarDeclNode* var = ast.getVarByName(currentToken().value);
+        
+        if(!var)
+            throwErrorAtCurrentLocation("No such variable " + currentToken().value);
+        
+        if(IntDeclNode* intVar = dynamic_cast<IntDeclNode*>(var))
+        {
+            newNode = ast.addIntVarFactor(intVar);
+            nextToken();
+        }
+        else
+        {
+            throwErrorAtCurrentLocation("Variable is not an integer");
+        }
+    }
     
     if(unaryOp != TOK_INVALID)
         return ast.newUnaryOpNode(newNode, unaryOp);

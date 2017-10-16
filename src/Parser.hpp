@@ -21,6 +21,15 @@ private:
         return lastToken;
     }
     
+    Token& peekNextToken()
+    {
+        nextToken();
+        Token& next = currentToken();
+        prevToken();
+        
+        return next;
+    }
+    
     void expectType(TokenType expectedType)
     {
         // TODO: name the tokens and print what was expected
