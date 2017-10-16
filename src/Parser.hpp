@@ -28,7 +28,14 @@ private:
             throwErrorAtCurrentLocation("Unexpected token: " + currentToken().value);
     }
                 
-    void nextToken() { ++currentTokenId; }
+    void nextToken()
+    {
+        ++currentTokenId; 
+        
+        if(currentToken().type == TOK_REM)
+            nextToken();
+    }
+    
     void prevToken() { if(currentTokenId > 0) --currentTokenId; }
     
     ExpressionNode* parseExpression();
