@@ -5,6 +5,8 @@ var
 begin
     let x = 5
     
+    label label1
+    
     for x = 5 to 10 by 1
         for y = 20 + 5 to 9 * 5 + 1 by 7
             let x = 10

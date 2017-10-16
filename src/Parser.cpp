@@ -154,6 +154,7 @@ StatementNode* Parser::parseStatement()
         case TOK_LET:       return parseLetStatement();
         case TOK_FOR:       return parseForLoop();
         case TOK_GOTO:      return parseGoto();
+        case TOK_LABEL:     return parseLabel();
         
         default:
             break;
@@ -253,6 +254,20 @@ GotoNode* Parser::parseGoto()
     
     return newNode;
 }
+
+LabelNode* Parser::parseLabel()
+{
+    nextToken();
+    expectType(TOK_ID);
+    
+    std::string name = currentToken().value;
+    
+    LabelNode* newNode = ast.addLabelNode(name, currentToken().line, currentToken().col);
+    nextToken();
+    
+    return newNode;
+}
+
 
 
 
