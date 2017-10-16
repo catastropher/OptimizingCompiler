@@ -86,7 +86,7 @@ ExpressionNode* Parser::parseFactor()
         nextToken();
     }
     
-    FactorNode* newNode = NULL;
+    ExpressionNode* newNode = NULL;
     
     if(currentToken().type == TOK_NUMBER)
     {
@@ -96,6 +96,14 @@ ExpressionNode* Parser::parseFactor()
     else if(currentToken().type == TOK_ID)
     {
         newNode = parseVarFactor();
+    }
+    else if(currentToken().type == TOK_LPAREN)
+    {
+        nextToken();
+        newNode = parseExpression();
+        
+        expectType(TOK_RPAREN);
+        nextToken();
     }
     
     if(unaryOp != TOK_INVALID)
@@ -306,10 +314,17 @@ ForLoopNode* Parser::parseForLoop()
     
     ExpressionNode* upper = parseExpression();
     
-    expectType(TOK_BY);
-    nextToken();
+    ExpressionNode* inc;
     
-    ExpressionNode* inc = parseExpression();
+    if(peekNextToken().type == TOK_BY)
+    {
+        nextToken();
+        inc = parseExpression();
+    }
+    else
+    {
+        inc = ast.newIntegerNode(1);
+    }
     
     CodeBlockNode* body = parseCodeBlock(TOK_ENDFOR);
     nextToken();
@@ -386,6 +401,9 @@ IfNode* Parser::parseIf()
     ExpressionNode* condition = parseCondition();
     
     expectType(TOK_RPAREN);
+    nextToken();
+    
+    expectType(TOK_THEN);
     nextToken();
     
     StatementNode* body = parseStatement();

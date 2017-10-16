@@ -162,7 +162,7 @@ bool Lexer::lexOperator()
 
 bool Lexer::lexComparisonOperator()
 {
-    if(*begin != '=' && *begin != '<' && *begin != '>')
+    if(*begin != '=' && *begin != '<' && *begin != '>' && *begin != '!')
         return false;
     
     const char* tokenEnd = begin + 1;
