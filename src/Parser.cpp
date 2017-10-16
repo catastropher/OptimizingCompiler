@@ -32,6 +32,50 @@ ExpressionNode* Parser::Parser::parseExpression()
     return result;
 }
 
+FactorNode* Parser::parseVarFactor()
+{
+    VarDeclNode* var = ast.getVarByName(currentToken().value);
+    FactorNode* newNode = NULL;
+    
+    std::string name = currentToken().value;
+    
+    if(!var)
+        throwErrorAtCurrentLocation("No such variable " + name);
+    
+    bool arrayAccess = peekNextToken().type == TOK_LSQUARE_BRACKET;
+    
+    if(IntDeclNode* intVar = dynamic_cast<IntDeclNode*>(var))
+    {
+        if(arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " does not have list type");
+        
+        newNode = ast.addIntVarFactor(intVar);
+        nextToken();
+    }
+    else if(OneDimensionalListDecl* listVar = dynamic_cast<OneDimensionalListDecl*>(var))
+    {
+        if(!arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " has array type - expected '['");
+        
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        ExpressionNode* index = parseExpression();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        newNode = ast.addOneDimensionalListFactor(listVar, index);
+    }
+    else
+    {
+        throwErrorAtCurrentLocation("Variable " + name + " does not have integer type");
+    }
+    
+    return newNode;
+}
+
 ExpressionNode* Parser::parseFactor()
 {
     TokenType unaryOp = TOK_INVALID;
@@ -51,20 +95,7 @@ ExpressionNode* Parser::parseFactor()
     }
     else if(currentToken().type == TOK_ID)
     {
-        VarDeclNode* var = ast.getVarByName(currentToken().value);
-        
-        if(!var)
-            throwErrorAtCurrentLocation("No such variable " + currentToken().value);
-        
-        if(IntDeclNode* intVar = dynamic_cast<IntDeclNode*>(var))
-        {
-            newNode = ast.addIntVarFactor(intVar);
-            nextToken();
-        }
-        else
-        {
-            throwErrorAtCurrentLocation("Variable is not an integer");
-        }
+        newNode = parseVarFactor();
     }
     
     if(unaryOp != TOK_INVALID)

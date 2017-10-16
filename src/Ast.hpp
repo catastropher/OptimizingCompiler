@@ -41,6 +41,17 @@ struct IntVarFactor : FactorNode
     IntDeclNode* var;
 };
 
+struct OneDimensionalListDecl;
+
+struct OneDimensionalListFactor : FactorNode
+{
+    OneDimensionalListFactor(OneDimensionalListDecl* var_, ExpressionNode* index_)
+        : var(var_), index(index_) { }
+    
+    OneDimensionalListDecl* var;
+    ExpressionNode* index;
+};
+
 struct BinaryOpNode : ExpressionNode
 {
     BinaryOpNode(ExpressionNode* left_, TokenType op_, ExpressionNode* right_)
@@ -216,6 +227,13 @@ public:
         return newNode;
     }
     
+    OneDimensionalListFactor* addOneDimensionalListFactor(OneDimensionalListDecl* var, ExpressionNode* index)
+    {
+        auto newNode = new OneDimensionalListFactor(var, index);
+        addNode(newNode);
+        return newNode;
+    }
+    
     BinaryOpNode* newBinaryOpNode(ExpressionNode* left, TokenType op, ExpressionNode* right)
     {
         BinaryOpNode* newNode = new BinaryOpNode(left, op, right);
@@ -320,6 +338,8 @@ public:
     
     ~Ast()
     {
+        std::cout << "Total nodes created: " << nodes.size() << std::endl;
+        
         for(AstNode* node : nodes)
             delete node;
         

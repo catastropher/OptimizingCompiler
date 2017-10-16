@@ -50,6 +50,7 @@ private:
     ExpressionNode* parseExpression();
     ExpressionNode* parseTerm();
     ExpressionNode* parseFactor();
+    FactorNode* parseVarFactor();
     
     bool parseVarDecl();
     void parseHeader();
