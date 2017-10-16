@@ -156,6 +156,7 @@ StatementNode* Parser::parseStatement()
         case TOK_GOTO:      return parseGoto();
         case TOK_LABEL:     return parseLabel();
         case TOK_WHILE:     return parseWhileLoop();
+        case TOK_IF:        return parseIf();
         
         default:
             break;
@@ -302,6 +303,22 @@ ExpressionNode* Parser::parseCondition()
     return ast.newBinaryOpNode(leftSide, op, rightSide);
 }
 
+IfNode * Parser::parseIf()
+{
+    nextToken();
+    
+    expectType(TOK_LPAREN);
+    nextToken();
+    
+    ExpressionNode* condition = parseCondition();
+    
+    expectType(TOK_RPAREN);
+    nextToken();
+    
+    StatementNode* body = parseStatement();
+    
+    return ast.addIfNode(condition, body);
+}
 
 
 

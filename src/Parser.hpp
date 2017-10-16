@@ -45,6 +45,7 @@ private:
     CodeBlockNode* parseCodeBlock(TokenType endToken);
     ForLoopNode* parseForLoop();
     WhileLoopNode* parseWhileLoop();
+    IfNode* parseIf();
     
     GotoNode* parseGoto();
     LabelNode* parseLabel();

@@ -181,6 +181,15 @@ struct WhileLoopNode : StatementNode
     CodeBlockNode* body;
 };
 
+struct IfNode : StatementNode
+{
+    IfNode(ExpressionNode* condition_, StatementNode* body_)
+        : condition(condition_), body(body_) { }
+    
+    ExpressionNode* condition;
+    StatementNode* body;
+};
+
 class Ast
 {
 public:
@@ -266,6 +275,13 @@ public:
     WhileLoopNode* addWhileLoopNode(ExpressionNode* condition, CodeBlockNode* body_)
     {
         auto newNode = new WhileLoopNode(condition, body_);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    IfNode* addIfNode(ExpressionNode* condition, StatementNode* body_)
+    {
+        auto newNode = new IfNode(condition, body_);
         addNode(newNode);
         return newNode;
     }

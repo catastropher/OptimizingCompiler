@@ -22,6 +22,10 @@ begin
                 endfor
             endwhile
             
+            if(5 <= 10 + 2 * 3)
+                if(2 * 3 + 4 < 9)
+                    goto label1
+            
         endfor
     endfor
     
