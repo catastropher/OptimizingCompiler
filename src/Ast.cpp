@@ -43,8 +43,7 @@ void LetStatementNode::accept(AstVisitor& visitor)
 
 void CodeBlockNode::accept(AstVisitor& visitor)
 {
-    for(StatementNode* node : statements)
-        node->accept(visitor);
+    visitor.visit(this);
 }
 
 void ForLoopNode::accept(AstVisitor& visitor)

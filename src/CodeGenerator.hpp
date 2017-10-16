@@ -52,14 +52,7 @@ struct CodeGenerator : AstVisitor
         node->left->accept(*this);
         node->right->accept(*this);
         
-        std::string op;
-        
-        if(node->op == TOK_ADD)
-            op = "+";
-        else if(node->op == TOK_SUB)
-            op = "-";
-        else if(node->op == TOK_MUL)
-            op = "*";
+        std::string op = Token::getTokenName(node->op);
         
         std::string right = pop();
         std::string left = pop();
@@ -75,7 +68,46 @@ struct CodeGenerator : AstVisitor
         std::string left = pop();
         std::string right = pop();
         
-        addLine(left + " = " + right);
+        addLine(left + " = " + right + ";");
+    }
+    
+    void visit(CodeBlockNode* node)
+    {
+        addLine("{");
+        ++currentIndent;
+        
+        for(StatementNode* s : node->statements)
+            s->accept(*this);
+        
+        --currentIndent;
+        addLine("}");
+        addLine("");
+    }
+    
+    void visit(IfNode* node)
+    {
+        node->condition->accept(*this);
+        
+        std::string condition = pop();
+        
+        addLine("if(" + condition + ")");
+        
+        ++currentIndent;
+        node->body->accept(*this);
+        --currentIndent;
+        
+        addLine("");
+    }
+    
+    void visit(WhileLoopNode* node)
+    {
+        node->condition->accept(*this);
+        
+        std::string condition = pop();
+        
+        addLine("while(" + condition + ")");
+        
+        node->body->accept(*this);
     }
     
     std::string pop()
@@ -97,10 +129,10 @@ struct CodeGenerator : AstVisitor
         if(useIndent)
         {
             for(int i = 0; i < currentIndent; ++i)
-                indent += "\n";
+                indent += "    ";
         }
         
-        output.push_back(indent + line + ";");
+        output.push_back(indent + line);
     }
 
     std::vector<std::string> output;
