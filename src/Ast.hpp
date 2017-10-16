@@ -2,12 +2,15 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "Token.hpp"
 
+struct AstVisitor;
+
 struct AstNode
 {
-    AstNode* nextNode;
+    virtual void accept(AstVisitor& v) { }
     virtual ~AstNode() { }
 };
 
@@ -28,6 +31,7 @@ struct IntegerNode : FactorNode
     IntegerNode(int value_) : value(value_) { }
     
     int tryEvaluate() { return value; }
+    void accept(AstVisitor& v);
     
     int value;
 };
@@ -37,6 +41,7 @@ struct IntDeclNode;
 struct IntVarFactor : FactorNode
 {
     IntVarFactor(IntDeclNode* var_) : var(var_) { }
+    void accept(AstVisitor& v);
     
     IntDeclNode* var;
 };
@@ -47,6 +52,8 @@ struct OneDimensionalListFactor : FactorNode
 {
     OneDimensionalListFactor(OneDimensionalListDecl* var_, ExpressionNode* index_)
         : var(var_), index(index_) { }
+    
+    void accept(AstVisitor& v);
     
     OneDimensionalListDecl* var;
     ExpressionNode* index;
@@ -75,6 +82,8 @@ struct BinaryOpNode : ExpressionNode
         throw "Can't evaluate op";
     }
     
+    void accept(AstVisitor& v);
+    
     ExpressionNode* left;
     TokenType op;
     ExpressionNode* right;
@@ -94,6 +103,8 @@ struct UnaryOpNode : ExpressionNode
         
         throw "Invalid unary op";
     }
+    
+    void accept(AstVisitor& v);
     
     ExpressionNode* value;
     TokenType op;
@@ -120,7 +131,7 @@ struct OneDimensionalListDecl : VarDeclNode
     OneDimensionalListDecl(std::string name_, int line_, int col_, int totalElements_)
         : VarDeclNode(name_, line_, col_),
         totalElements(totalElements_) { }
-    
+        
     int totalElements;
 };
 
@@ -138,6 +149,8 @@ struct IntLValueNode : LValueNode
 {
     IntLValueNode(IntDeclNode* var_) : var(var_) { }
     
+    void accept(AstVisitor& v);
+    
     IntDeclNode* var;
 };
 
@@ -146,6 +159,8 @@ struct OneDimensionalListLValueNode : LValueNode
     OneDimensionalListLValueNode(OneDimensionalListDecl* var_, ExpressionNode* index_)
         : var(var_), index(index_) { }
         
+    void accept(AstVisitor& v);
+        
     OneDimensionalListDecl* var;
     ExpressionNode* index;
 };
@@ -153,6 +168,8 @@ struct OneDimensionalListLValueNode : LValueNode
 struct LetStatementNode : StatementNode
 {
     LetStatementNode(LValueNode* leftSide_, ExpressionNode* rightSide_) : leftSide(leftSide_), rightSide(rightSide_) { }
+    
+    void accept(AstVisitor& v);
     
     LValueNode* leftSide;
     ExpressionNode* rightSide;
@@ -165,6 +182,8 @@ struct CodeBlockNode : StatementNode
         statements.push_back(node);
     }
     
+    void accept(AstVisitor& v);
+    
     std::vector<StatementNode*> statements;
 };
 
@@ -172,6 +191,8 @@ struct ForLoopNode : StatementNode
 {
     ForLoopNode(LValueNode* var_, ExpressionNode* lower, ExpressionNode* upper, ExpressionNode* inc, CodeBlockNode* body_)
         : var(var_), lowerBound(lower), upperBound(upper), increment(inc), body(body_) { }
+    
+    void accept(AstVisitor& v);
     
     LValueNode* var;
     ExpressionNode* lowerBound;
@@ -185,6 +206,8 @@ struct LabelNode : StatementNode
     LabelNode(std::string name_, int line_, int col_)
         : name(name_), line(line_), col(col_) { }
     
+    void accept(AstVisitor& v);
+    
     std::string name;
     int line;
     int col;
@@ -194,6 +217,8 @@ struct GotoNode : StatementNode
 {
     GotoNode(std::string labelName_, int line_, int col_)
         : labelName(labelName_), line(line_), col(col_) { }
+    
+    void accept(AstVisitor& v);
     
     std::string labelName;
     LabelNode* target;
@@ -206,6 +231,8 @@ struct WhileLoopNode : StatementNode
     WhileLoopNode(ExpressionNode* condition_, CodeBlockNode* body_)
         : condition(condition_), body(body_) { }
     
+    void accept(AstVisitor& v);
+    
     ExpressionNode* condition;
     CodeBlockNode* body;
 };
@@ -214,6 +241,8 @@ struct IfNode : StatementNode
 {
     IfNode(ExpressionNode* condition_, StatementNode* body_)
         : condition(condition_), body(body_) { }
+        
+    void accept(AstVisitor& v);;
     
     ExpressionNode* condition;
     StatementNode* body;
@@ -223,12 +252,16 @@ struct PrintNode : StatementNode
 {
     PrintNode(ExpressionNode* value_) : value(value_) { }
     
+    void accept(AstVisitor& v);;
+    
     ExpressionNode* value;
 };
 
 struct PromptNode : StatementNode
 {
     PromptNode(std::string str_) : str(str_) { }
+    
+    void accept(AstVisitor& v);
     
     std::string str;
 };
@@ -237,12 +270,16 @@ struct InputNode : StatementNode
 {
     InputNode(LValueNode* var_) : var(var_) { }
     
+    void accept(AstVisitor& v);
+    
     LValueNode* var;
 };
 
 class Ast
 {
 public:
+    void accept(AstVisitor& v);
+    
     IntegerNode* newIntegerNode(int value)
     {
         IntegerNode* newNode = new IntegerNode(value);
