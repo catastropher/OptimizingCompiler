@@ -46,7 +46,7 @@ static std::map<std::string, TokenType> operators =
     { ")", TOK_RPAREN }
 };
 
-static std::map<TokenType, std::std::string> tokenNames =
+static std::map<TokenType, std::string> tokenNames =
 {
     { TOK_INVALID, "INVALID" },
     { TOK_TITLE, "title" },
@@ -56,7 +56,7 @@ static std::map<TokenType, std::std::string> tokenNames =
     { TOK_INT, "int" },
     { TOK_LIST, "list" },
     { TOK_LSQUARE_BRACKET, "[" },
-    { TOK_RSQUARE_BRACKET, "]" }
+    { TOK_RSQUARE_BRACKET, "]" },
     { TOK_REM, "comment (rem)" },
     { TOK_LABEL, "label" },
     { TOK_LET, "let" },
@@ -89,7 +89,7 @@ static std::map<TokenType, std::std::string> tokenNames =
     { TOK_ENDFOR, "endfor" },
     { TOK_ENDWHILE, "endwhile"},
     { TOK_STRING, "string"}
-}
+};
 
 TokenType Token::getKeywordType(std::string keyword)
 {
@@ -105,4 +105,11 @@ TokenType Token::getOperatorType(std::string op)
         return operators[op];
 
     return TOK_INVALID;
+}
+
+std::string Token::getTokenName(TokenType inToken)
+{
+    if (tokenNames.count(inToken)!= 0)
+        return tokenNames[inToken];
+    return tokenNames[TOK_INVALID];
 }
