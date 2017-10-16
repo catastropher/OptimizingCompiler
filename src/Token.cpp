@@ -78,7 +78,7 @@ static std::map<TokenType, std::string> tokenNames =
     { TOK_DIV, "/"},
     { TOK_MOD, "%"},
     { TOK_NUMBER, "number"},
-    { TOK_ID, "ID"},
+    { TOK_ID, "Identifier"},
     { TOK_ASSIGN, "=" },
     { TOK_FOR, "for" },
     { TOK_BY, "by" },
