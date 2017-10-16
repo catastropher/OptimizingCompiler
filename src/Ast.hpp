@@ -139,6 +139,18 @@ struct CodeBlockNode : AstNode
     std::vector<StatementNode*> statements;
 };
 
+struct ForLoopNode : StatementNode
+{
+    ForLoopNode(LValueNode* var_, ExpressionNode* lower, ExpressionNode* upper, ExpressionNode* inc, CodeBlockNode* body_)
+        : var(var_), lowerBound(lower), upperBound(upper), increment(inc), body(body_) { }
+    
+    LValueNode* var;
+    ExpressionNode* lowerBound;
+    ExpressionNode* upperBound;
+    ExpressionNode* increment;
+    CodeBlockNode* body;
+};
+
 class Ast
 {
 public:
@@ -196,6 +208,13 @@ public:
     CodeBlockNode* addCodeBlockNode()
     {
         CodeBlockNode* newNode = new CodeBlockNode;
+        addNode(newNode);
+        return newNode;
+    }
+    
+    ForLoopNode* addForLoopNode(LValueNode* var, ExpressionNode* lower, ExpressionNode* upper, ExpressionNode* inc, CodeBlockNode* body_)
+    {
+        ForLoopNode* newNode = new ForLoopNode(var, lower, upper, inc, body_);
         addNode(newNode);
         return newNode;
     }

@@ -153,6 +153,9 @@ StatementNode* Parser::parseStatement()
     {
         case TOK_LET:
             return parseLetStatement();
+            
+        case TOK_FOR:
+            return parseForLoop();
         
         default:
             break;
@@ -213,6 +216,32 @@ CodeBlockNode* Parser::parseCodeBlock(TokenType endToken)
     return block;
 }
 
+ForLoopNode* Parser::parseForLoop()
+{
+    nextToken();
+    
+    LValueNode* var = parseLValue();
+    
+    expectType(TOK_ASSIGN);
+    nextToken();
+    
+    ExpressionNode* lower = parseExpression();
+    
+    expectType(TOK_TO);
+    nextToken();
+    
+    ExpressionNode* upper = parseExpression();
+    
+    expectType(TOK_BY);
+    nextToken();
+    
+    ExpressionNode* inc = parseExpression();
+    
+    CodeBlockNode* body = parseCodeBlock(TOK_ENDFOR);
+    nextToken();
+    
+    return ast.addForLoopNode(var, lower, upper, inc, body);
+}
 
 
 

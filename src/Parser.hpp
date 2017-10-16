@@ -43,6 +43,7 @@ private:
     LetStatementNode* parseLetStatement();
     
     CodeBlockNode* parseCodeBlock(TokenType endToken);
+    ForLoopNode* parseForLoop();
     
     void throwErrorAtCurrentLocation(std::string errorMessage);
     
