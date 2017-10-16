@@ -4,6 +4,7 @@
 
 struct AstVisitor
 {
+    virtual void visit(StatementNode*) { }
     virtual void visit(ExpressionNode*) { }
     virtual void visit(IntegerNode*) { }
     virtual void visit(IntVarFactor*) { }

@@ -4,6 +4,7 @@
 #include "File.hpp"
 #include "Ast.hpp"
 #include "Parser.hpp"
+#include "CodeGenerator.hpp"
 
 int main()
 {
@@ -15,7 +16,17 @@ int main()
         std::vector<Token>& tokens = lexer.lexTokens();
         
         Parser parser(tokens);
-        parser.parse();
+        Ast& ast = parser.parse();
+        
+        CodeGenerator gen;
+        ast.accept(gen);
+        
+        std::cout << "----------------------------\n";
+        
+        for(auto line : gen.output)
+        {
+            std::cout << line << "\n";
+        }
     }
     catch(const char* str)
     {

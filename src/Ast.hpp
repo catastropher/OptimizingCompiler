@@ -137,7 +137,6 @@ struct OneDimensionalListDecl : VarDeclNode
 
 struct StatementNode : AstNode
 {
-    
 };
 
 struct LValueNode : AstNode
@@ -278,7 +277,10 @@ struct InputNode : StatementNode
 class Ast
 {
 public:
-    void accept(AstVisitor& v);
+    void accept(AstVisitor& v)
+    {
+        body->accept(v);
+    }
     
     IntegerNode* newIntegerNode(int value)
     {

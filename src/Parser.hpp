@@ -10,7 +10,7 @@ class Parser
 public:
     Parser(std::vector<Token>& tokens_);
     
-    void parse();
+    Ast& parse();
     
 private:
     Token& currentToken()

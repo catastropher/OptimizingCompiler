@@ -10,10 +10,11 @@ Parser::Parser(std::vector<Token>& tokens_)
     
 }
 
-void Parser::parse()
+Ast& Parser::parse()
 {
     parseHeader();
     ast.setBody(parseCodeBlock(TOK_END));
+    return ast;
 }
 
 ExpressionNode* Parser::Parser::parseExpression()
