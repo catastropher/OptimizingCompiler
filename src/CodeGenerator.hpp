@@ -89,6 +89,12 @@ struct CodeGenerator : AstVisitor
         push("(" + left + " " + op + " " + right + ")");
     }
     
+    void visit(UnaryOpNode* node)
+    {
+        node->value->accept(*this);
+        push(Token::getTokenName(node->op) + "(" + pop() + ")");
+    }
+    
     void visit(LetStatementNode* node)
     {
         node->rightSide->accept(*this);
@@ -175,6 +181,16 @@ struct CodeGenerator : AstVisitor
     void visit(EndNode* node)
     {
         addLine("return 0;");
+    }
+    
+    void visit(LabelNode* node)
+    {
+        addLine(node->name + ":", false);
+    }
+    
+    void visit(GotoNode* node)
+    {
+        addLine("goto " + node->labelName + ";");
     }
     
     std::string pop()
