@@ -45,6 +45,9 @@ private:
     CodeBlockNode* parseCodeBlock(TokenType endToken);
     ForLoopNode* parseForLoop();
     
+    GotoNode* parseGoto();
+    LabelNode* parseLabel();
+    
     void throwErrorAtCurrentLocation(std::string errorMessage);
     
     std::vector<Token>& tokens;

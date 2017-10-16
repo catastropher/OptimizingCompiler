@@ -151,11 +151,9 @@ StatementNode* Parser::parseStatement()
     
     switch(currentToken().type)
     {
-        case TOK_LET:
-            return parseLetStatement();
-            
-        case TOK_FOR:
-            return parseForLoop();
+        case TOK_LET:       return parseLetStatement();
+        case TOK_FOR:       return parseForLoop();
+        case TOK_GOTO:      return parseGoto();
         
         default:
             break;
@@ -242,6 +240,20 @@ ForLoopNode* Parser::parseForLoop()
     
     return ast.addForLoopNode(var, lower, upper, inc, body);
 }
+
+GotoNode* Parser::parseGoto()
+{
+    nextToken();
+    expectType(TOK_ID);
+    
+    std::string name = currentToken().value;
+    
+    GotoNode* newNode = ast.addGotoNode(name, currentToken().line, currentToken().col);
+    nextToken();
+    
+    return newNode;
+}
+
 
 
 

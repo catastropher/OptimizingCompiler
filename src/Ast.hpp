@@ -129,7 +129,7 @@ struct LetStatementNode : StatementNode
     ExpressionNode* rightSide;
 };
 
-struct CodeBlockNode : AstNode
+struct CodeBlockNode : StatementNode
 {
     void addStatement(StatementNode* node)
     {
@@ -149,6 +149,27 @@ struct ForLoopNode : StatementNode
     ExpressionNode* upperBound;
     ExpressionNode* increment;
     CodeBlockNode* body;
+};
+
+struct LabelNode : StatementNode
+{
+    LabelNode(std::string name_, int line_, int col_)
+        : name(name_), line(line_), col(col_) { }
+    
+    std::string name;
+    int line;
+    int col;
+};
+
+struct GotoNode : StatementNode
+{
+    GotoNode(std::string labelName_, int line_, int col_)
+        : labelName(labelName_), line(line_), col(col_) { }
+    
+    std::string labelName;
+    LabelNode* target;
+    int line;
+    int col;
 };
 
 class Ast
@@ -215,6 +236,20 @@ public:
     ForLoopNode* addForLoopNode(LValueNode* var, ExpressionNode* lower, ExpressionNode* upper, ExpressionNode* inc, CodeBlockNode* body_)
     {
         ForLoopNode* newNode = new ForLoopNode(var, lower, upper, inc, body_);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    LabelNode* addLabelNode(std::string name, int line, int col)
+    {
+        LabelNode* newNode = new LabelNode(name, line, col);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    GotoNode* addGotoNode(std::string targetLabel, int line, int col)
+    {
+        GotoNode* newNode = new GotoNode(targetLabel, line, col);
         addNode(newNode);
         return newNode;
     }
