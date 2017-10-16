@@ -11,6 +11,17 @@ begin
         for y = 20 + 5 to 9 * 5 + 1 by 7
             let x = 10
             goto blah
+            
+            while (5 <= 20)
+                let x = 6
+                
+                for y = 1 to 20 by 1
+                    while (2 < 2 + 5 * 3)
+                        let y = 20
+                    endwhile
+                endfor
+            endwhile
+            
         endfor
     endfor
     

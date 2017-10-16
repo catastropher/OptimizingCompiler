@@ -155,6 +155,7 @@ StatementNode* Parser::parseStatement()
         case TOK_FOR:       return parseForLoop();
         case TOK_GOTO:      return parseGoto();
         case TOK_LABEL:     return parseLabel();
+        case TOK_WHILE:     return parseWhileLoop();
         
         default:
             break;
@@ -242,6 +243,24 @@ ForLoopNode* Parser::parseForLoop()
     return ast.addForLoopNode(var, lower, upper, inc, body);
 }
 
+WhileLoopNode* Parser::parseWhileLoop()
+{
+    nextToken();
+    
+    expectType(TOK_LPAREN);
+    nextToken();
+    
+    ExpressionNode* condition = parseCondition();
+    
+    expectType(TOK_RPAREN);
+    nextToken();
+    
+    CodeBlockNode* body = parseCodeBlock(TOK_ENDWHILE);
+    nextToken();
+    
+    return ast.addWhileLoopNode(condition, body);
+}
+
 GotoNode* Parser::parseGoto()
 {
     nextToken();
@@ -268,7 +287,7 @@ LabelNode* Parser::parseLabel()
     return newNode;
 }
 
-ExpressionNode * Parser::parseCondition()
+ExpressionNode* Parser::parseCondition()
 {
     ExpressionNode* leftSide = parseExpression();
     
@@ -282,6 +301,7 @@ ExpressionNode * Parser::parseCondition()
     
     return ast.newBinaryOpNode(leftSide, op, rightSide);
 }
+
 
 
 

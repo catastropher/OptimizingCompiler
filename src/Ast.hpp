@@ -172,6 +172,15 @@ struct GotoNode : StatementNode
     int col;
 };
 
+struct WhileLoopNode : StatementNode
+{
+    WhileLoopNode(ExpressionNode* condition_, CodeBlockNode* body_)
+        : condition(condition_), body(body_) { }
+    
+    ExpressionNode* condition;
+    CodeBlockNode* body;
+};
+
 class Ast
 {
 public:
@@ -250,6 +259,13 @@ public:
     GotoNode* addGotoNode(std::string targetLabel, int line, int col)
     {
         GotoNode* newNode = new GotoNode(targetLabel, line, col);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    WhileLoopNode* addWhileLoopNode(ExpressionNode* condition, CodeBlockNode* body_)
+    {
+        auto newNode = new WhileLoopNode(condition, body_);
         addNode(newNode);
         return newNode;
     }
