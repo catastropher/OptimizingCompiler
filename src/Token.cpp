@@ -30,6 +30,7 @@ static std::map<std::string, TokenType> languageKeywords =
 static std::map<std::string, TokenType> operators = 
 {
     { "==", TOK_EQ },
+    { "!=", TOK_NE },
     { "=", TOK_ASSIGN },
     { "<", TOK_LT },
     { ">", TOK_GT },
@@ -45,6 +46,11 @@ static std::map<std::string, TokenType> operators =
     { "(", TOK_LPAREN },
     { ")", TOK_RPAREN }
 };
+
+bool Token::isComparisonOperator(TokenType type)
+{
+    return type == TOK_EQ || type == TOK_LT || type == TOK_GT || type == TOK_LE || type == TOK_GE || type == TOK_NE;
+}
 
 TokenType Token::getKeywordType(std::string keyword)
 {

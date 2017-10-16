@@ -60,5 +60,6 @@ struct Token
     
     static TokenType getKeywordType(std::string keyword);
     static TokenType getOperatorType(std::string op);
+    static bool isComparisonOperator(TokenType type);
 };
 

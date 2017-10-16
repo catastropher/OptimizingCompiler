@@ -48,6 +48,8 @@ private:
     GotoNode* parseGoto();
     LabelNode* parseLabel();
     
+    ExpressionNode* parseCondition();
+    
     void throwErrorAtCurrentLocation(std::string errorMessage);
     
     std::vector<Token>& tokens;

@@ -268,6 +268,20 @@ LabelNode* Parser::parseLabel()
     return newNode;
 }
 
+ExpressionNode * Parser::parseCondition()
+{
+    ExpressionNode* leftSide = parseExpression();
+    
+    if(!Token::isComparisonOperator(currentToken().type))
+        throwErrorAtCurrentLocation("Expected comparison operator");
+    
+    TokenType op = currentToken().type;
+    nextToken();
+    
+    ExpressionNode* rightSide = parseExpression();
+    
+    return ast.newBinaryOpNode(leftSide, op, rightSide);
+}
 
 
 
