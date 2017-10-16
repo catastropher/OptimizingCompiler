@@ -139,6 +139,11 @@ struct StatementNode : AstNode
 {
 };
 
+struct EndNode : StatementNode
+{
+    void accept(AstVisitor& v);
+};
+
 struct LValueNode : AstNode
 {
     
@@ -277,10 +282,8 @@ struct InputNode : StatementNode
 class Ast
 {
 public:
-    void accept(AstVisitor& v)
-    {
-        body->accept(v);
-    }
+    void accept(AstVisitor& v);
+    void accepVars(AstVisitor& v);
     
     IntegerNode* newIntegerNode(int value)
     {
@@ -413,6 +416,13 @@ public:
     PrintNode* addPrintNode(ExpressionNode* value)
     {
         auto newNode = new PrintNode(value);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    EndNode* addEndNode()
+    {
+        auto newNode = new EndNode;
         addNode(newNode);
         return newNode;
     }

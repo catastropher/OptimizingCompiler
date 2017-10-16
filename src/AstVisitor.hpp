@@ -23,4 +23,7 @@ struct AstVisitor
     virtual void visit(PrintNode*) { }
     virtual void visit(PromptNode*) { }
     virtual void visit(InputNode*) { }
+    virtual void visit(EndNode*) { }
+    
+    virtual void visitVars(std::vector<VarDeclNode*>&) { }
 };

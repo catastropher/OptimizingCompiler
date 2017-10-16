@@ -1,13 +1,17 @@
 var
     list[50] x
     int y
+    int i
 begin
-    if(x[20] * 3 <= 9) then
-        let x[3] = x[2] + 1
+    for y = 1 to 100 by 1
+        let x[y] = x[y] + 1
+        print x[y] * 3 % 2
         
-    while(y < 10)
-        while(y != 2)
-            let y = y + 1
+        while(i < 50)
+            input x[y + 5]
+            prompt "Hello world"
+            
+            let i = i + 1
         endwhile
-    endwhile
+    endfor
 end

@@ -13,7 +13,11 @@ Parser::Parser(std::vector<Token>& tokens_)
 Ast& Parser::parse()
 {
     parseHeader();
-    ast.setBody(parseCodeBlock(TOK_END));
+    
+    CodeBlockNode* body = parseCodeBlock(TOK_END);
+    body->addStatement(ast.addEndNode());
+    ast.setBody(body);
+    
     return ast;
 }
 
@@ -317,7 +321,7 @@ ForLoopNode* Parser::parseForLoop()
     
     ExpressionNode* inc;
     
-    if(peekNextToken().type == TOK_BY)
+    if(currentToken().type == TOK_BY)
     {
         nextToken();
         inc = parseExpression();

@@ -1,6 +1,17 @@
 #include "Ast.hpp"
 #include "AstVisitor.hpp"
 
+void Ast::accept(AstVisitor& v)
+{
+    body->accept(v);
+}
+
+void Ast::accepVars(AstVisitor& v)
+{
+    v.visitVars(vars);
+}
+
+
 void IntegerNode::accept(AstVisitor& visitor)
 {
     visitor.visit(this);
@@ -35,6 +46,12 @@ void OneDimensionalListLValueNode::accept(AstVisitor& visitor)
 {
     visitor.visit(this);
 }
+
+void EndNode::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+
 
 void LetStatementNode::accept(AstVisitor& visitor)
 {

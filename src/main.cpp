@@ -19,7 +19,7 @@ int main()
         Ast& ast = parser.parse();
         
         CodeGenerator gen;
-        ast.accept(gen);
+        gen.genCode(ast);
         
         std::cout << "----------------------------\n";
         

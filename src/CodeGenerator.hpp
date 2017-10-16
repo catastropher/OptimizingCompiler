@@ -11,6 +11,35 @@ struct CodeGenerator : AstVisitor
         
     }
     
+    void visitVars(std::vector<VarDeclNode*>& vars)
+    {
+        for(auto var : vars)
+        {
+            if(auto intVar = dynamic_cast<IntDeclNode*>(var))
+            {
+                addLine("int " + intVar->name + ";");
+            }
+            else if(auto listVar = dynamic_cast<OneDimensionalListDecl*>(var))
+            {
+                addLine("int " + listVar->name + + "[" + std::to_string(listVar->totalElements) + "];");
+            }
+        }
+        
+        addLine("");
+    }
+    
+    void genCode(Ast& ast)
+    {
+        addLine("#include <stdio.h>");
+        addLine("#include <stdlib.h>");
+        
+        addLine("");
+        ast.accepVars(*this);
+        
+        addLine("int main()");
+        ast.accept(*this);
+    }
+    
     void visit(IntegerNode* node)
     {
         push(std::to_string(node->value));
@@ -108,6 +137,44 @@ struct CodeGenerator : AstVisitor
         addLine("while(" + condition + ")");
         
         node->body->accept(*this);
+    }
+    
+    void visit(ForLoopNode* node)
+    {
+        node->var->accept(*this);
+        node->lowerBound->accept(*this);
+        node->upperBound->accept(*this);
+        node->increment->accept(*this);
+        
+        std::string inc = pop();
+        std::string upper = pop();
+        std::string lower = pop();
+        std::string var = pop();
+        
+        addLine("for(" + var + " = " + lower + "; " + var + " <= " + upper + "; " + var + " += " + inc + ")");
+        node->body->accept(*this);
+    }
+    
+    void visit(PrintNode* node)
+    {
+        node->value->accept(*this);
+        addLine("printf(\"%d\", " + pop() + ");");
+    }
+    
+    void visit(InputNode* node)
+    {
+        node->var->accept(*this);
+        addLine("scanf(\"%d\", &" + pop() + ");");
+    }
+    
+    void visit(PromptNode* node)
+    {
+        addLine("printf(\"%s\", " + node->str + ");");
+    }
+    
+    void visit(EndNode* node)
+    {
+        addLine("return 0;");
     }
     
     std::string pop()
