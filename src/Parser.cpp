@@ -194,7 +194,6 @@ void Parser::parseHeader()
         else if(currentToken().type == TOK_TITLE)
         {
             ast.setTitle(currentToken().value);
-            std::cout << "Title: " << currentToken().value << std::endl;
             nextToken();
         }
         else if(currentToken().type == TOK_REM)
@@ -296,11 +295,10 @@ CodeBlockNode* Parser::parseCodeBlock(TokenType endToken)
     while(currentToken().type != endToken && currentToken().type != TOK_INVALID)
         block->addStatement(parseStatement());
     
-    // TODO add name of ending token
     if(currentToken().type != endToken)
     {
         prevToken();
-        throwErrorAtCurrentLocation("Expected end of code block");
+        throwErrorAtCurrentLocation("Expected " + Token::getTokenName(endToken));
     }
     
     return block;

@@ -6,29 +6,41 @@
 #include "Parser.hpp"
 #include "CodeGenerator.hpp"
 
-int main()
+void compileSource(std::string inputFile, std::string outputFile)
 {
+    std::string input = readFileContents(inputFile);
+        
+    Lexer lexer(input);
+    std::vector<Token>& tokens = lexer.lexTokens();
+    
+    Parser parser(tokens);
+    Ast& ast = parser.parse();
+    
+    CodeGenerator gen;
+    gen.genCode(ast);
+    
+    for(auto line : gen.output)
+    {
+        std::cout << line << "\n";
+    }
+    
+    std::cout << "------------------\n";
+    std::cout << "Compilation successful (written to " << outputFile << ")\n"; 
+    
+    writeFileContents(outputFile, gen.output);
+}
+
+int main(int argc, char* argv[])
+{
+    if(argc != 3)
+    {
+        std::cout << "Usage: " << argv[0] << " [inputFile] [outputFile]" << std::endl;
+        return -1;
+    }
+    
     try
     {
-        std::string input = readFileContents("../src/test.txt");
-        
-        Lexer lexer(input);
-        std::vector<Token>& tokens = lexer.lexTokens();
-        
-        Parser parser(tokens);
-        Ast& ast = parser.parse();
-        
-        CodeGenerator gen;
-        gen.genCode(ast);
-        
-        std::cout << "----------------------------\n";
-        
-        for(auto line : gen.output)
-        {
-            std::cout << line << "\n";
-        }
-        
-        writeFileContents("out.c", gen.output);
+        compileSource(argv[1], argv[2]);
     }
     catch(const char* str)
     {

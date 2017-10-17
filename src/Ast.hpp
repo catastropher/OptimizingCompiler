@@ -342,7 +342,6 @@ public:
     {
         IntDeclNode* newNode = new IntDeclNode(name, line, col);
         vars.push_back(newNode);
-        printf("Added new int var: %s\n", name.c_str());
         return newNode;
     }
     
@@ -350,7 +349,6 @@ public:
     {
         OneDimensionalListDecl* newNode = new OneDimensionalListDecl(name, line, col, totalElements);
         vars.push_back(newNode);
-        printf("Added new int 1D list of size %d: %s\n", totalElements, name.c_str());
         return newNode;
     }
     
@@ -473,7 +471,7 @@ public:
     
     ~Ast()
     {
-        std::cout << "Total nodes created: " << nodes.size() << std::endl;
+        std::cout << "Total nodes created in AST: " << nodes.size() << std::endl;
         
         for(AstNode* node : nodes)
             delete node;

@@ -1,20 +1,70 @@
+title mandelbrot by x. shen modified t. o'neil 4.1.2013
 var
-    int n
-    list[256] arr
-    int i
-    int j
+   int x
+   int y
+   int on
+   int real
+   int imag
+   int temp
+   int iter
+   int absreal
+   int absimag
+   int t0
+   int t1
+   int t2
+   int t3
+   int t4
+   int t5
+   int t6
+   int t7
+   int t8
+   int t9
+   int t10
 begin
-    let n = 15
-    for i = 0 to 255
-        let arr[i] = i
-    endfor
-        
-    for i = 0 to n
-        for j = 0 to n
-            print arr[i * 16 + j]
-            prompt "\t"
-        endfor
-        
-        prompt "\n"
-    endfor
+   let y = 950
+   while (y > -950)
+      let x = -2100
+      while (x < 1000)
+         let on = 0
+         rem check pixel
+         let real = 0
+         let imag = 0
+         let temp = 0
+         let iter = 0
+         while (iter < 255)
+            let t0 = real * real
+            let t1 = t0 + 500
+            let t2 = t1 / 1000
+            let t3 = imag * imag
+            let t4 = t3 + 500
+            let t5 = t4 / 1000
+            let t6 = t2 - t5
+            let temp = t6 + x
+            let t7 = 2 * real
+            let t8 = t7 * imag
+            let t9 = t8 + 500
+            let t10 = t9 / 1000
+            let imag = t10 + y
+            let real = temp
+            let absreal = real
+            if (real >= 0) then goto L0
+            let absreal = -1 * real
+            label L0
+            let absimag = imag
+            if (imag >= 0) then goto L1
+            let absimag = -1 * imag
+            label L1
+            if (absreal + absimag > 5000) then goto bail
+            let iter = iter + 1
+         endwhile
+         let on = 1
+         rem end check pixel
+         label bail
+         if (on == 1) then prompt "X"
+         if (on == 0) then prompt " "
+         let x = x + 40
+      endwhile
+      prompt "\n"
+      let y = y - 50
+   endwhile
 end

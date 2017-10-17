@@ -17,11 +17,6 @@ std::vector<Token>& Lexer::lexTokens()
 {
     while(lexNextToken()) ;
     
-    for(Token t : tokens)
-    {
-        std::cout << "Token '" << t.value << "': type " << (int)t.type << "\n";
-    }
-    
     return tokens;
 }
 
@@ -131,8 +126,6 @@ void Lexer::changeLastTokenTypeIfKeyword()
     
     if(keywordType != TOK_INVALID)
         lastToken.type = keywordType;
-    
-    printf("Keyword: %s\n", lastToken.value.c_str());
     
     if(keywordType == TOK_REM || keywordType == TOK_TITLE)
         lexComment();
