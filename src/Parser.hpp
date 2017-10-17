@@ -83,6 +83,7 @@ private:
     ExpressionNode* parseCondition();
     
     CodeBlockNode* transformForLoop(ForLoopNode* node);
+    CodeBlockNode* transformWhileLoop(WhileLoopNode* node);
     
     void throwErrorAtCurrentLocation(std::string errorMessage);
 

@@ -219,7 +219,7 @@ StatementNode* Parser::parseStatement()
         case TOK_FOR:       return transformForLoop(parseForLoop());
         case TOK_GOTO:      return parseGoto();
         case TOK_LABEL:     return parseLabel();
-        case TOK_WHILE:     return parseWhileLoop();
+        case TOK_WHILE:     return transformWhileLoop(parseWhileLoop());
         case TOK_IF:        return parseIf();
         case TOK_PROMPT:    return parsePrompt();
         case TOK_PRINT:     return parsePrint();
@@ -489,6 +489,35 @@ CodeBlockNode* Parser::transformForLoop(ForLoopNode* node)
     
     return block;
 }
+
+CodeBlockNode* Parser::transformWhileLoop(WhileLoopNode* node)
+{
+    CodeBlockNode* block = ast.addCodeBlockNode();
+    block->disableCurlyBraces();
+    
+    LabelNode* loopConditionLabel = generateTempLabel();
+    LabelNode* loopContinueLabel = generateTempLabel();
+    
+    block->addStatement(ast.addGotoNode(loopConditionLabel->name, -1, -1));
+    block->addStatement(loopContinueLabel);
+    
+    node->body->disableCurlyBraces();
+    block->addStatement(node->body);
+    
+    block->addStatement(loopConditionLabel);
+    
+    block->addStatement
+    (
+        ast.addIfNode
+        (
+            node->condition,
+            ast.addGotoNode(loopContinueLabel->name, -1, -1)
+        )
+    );
+    
+    return block;
+}
+
 
 CodeBlockNode* Parser::parseString(std::string str)
 {

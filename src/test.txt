@@ -1,33 +1,20 @@
-title sort by x. shen modified t. o'neil 4.1.2013
 var
+    int n
+    list[256] arr
     int i
     int j
-    list[50] arr
-    int n
-    int temp
-    int k
 begin
-    let n = 50
-    let k = 0
-    
-    for k = 20 to (3 + n) * 60 by 27
-        for i = 0 to n - 1
-            for j = i to n - 1
-                if(arr[j + 1] >= arr[j]) then goto cont
-                
-                let temp = arr[j]
-                let arr[j] = arr[j + 1]
-                let arr[j + 1] = temp
-                    
-                    
-                label cont
-            endfor
+    let n = 15
+    for i = 0 to 255
+        let arr[i] = i
+    endfor
+        
+    for i = 0 to n
+        for j = 0 to n
+            print arr[i * 16 + j]
+            prompt "\t"
         endfor
         
-        if(k < 100) then
-            print k
-        
-        
+        prompt "\n"
     endfor
-    
 end
