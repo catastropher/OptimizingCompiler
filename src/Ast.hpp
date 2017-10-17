@@ -443,6 +443,16 @@ public:
         body = body_;
     }
     
+    void setTitle(std::string title_)
+    {
+        title = title_;
+    }
+    
+    std::string getTitle()
+    {
+        return title;
+    }
+    
     ~Ast()
     {
         std::cout << "Total nodes created: " << nodes.size() << std::endl;
@@ -463,5 +473,6 @@ private:
     std::vector<AstNode*> nodes;
     std::vector<VarDeclNode*> vars;
     CodeBlockNode* body;
+    std::string title;
 };
 

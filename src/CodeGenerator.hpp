@@ -30,6 +30,14 @@ struct CodeGenerator : AstVisitor
     
     void genCode(Ast& ast)
     {
+        if(ast.getTitle() == "")
+            ast.setTitle("Untitled");
+        
+        std::string title = ast.getTitle();
+        title[0] = toupper(title[0]);
+        
+        addLine("// " + title);
+        
         addLine("#include <stdio.h>");
         addLine("#include <stdlib.h>");
         

@@ -27,6 +27,8 @@ int main()
         {
             std::cout << line << "\n";
         }
+        
+        writeFileContents("out.c", gen.output);
     }
     catch(const char* str)
     {

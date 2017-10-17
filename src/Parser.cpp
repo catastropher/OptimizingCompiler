@@ -191,6 +191,7 @@ void Parser::parseHeader()
         }
         else if(currentToken().type == TOK_TITLE)
         {
+            ast.setTitle(currentToken().value);
             std::cout << "Title: " << currentToken().value << std::endl;
             nextToken();
         }

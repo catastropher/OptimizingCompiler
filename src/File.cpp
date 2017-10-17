@@ -16,3 +16,18 @@ std::string readFileContents(std::string fileName)
     
     return contents;
 }
+
+void writeFileContents(std::string fileName, std::vector<std::string>& lines)
+{
+    FILE* file = fopen(fileName.c_str(), "wb");
+    
+    if(!file)
+        throw "Failed to open file for writing: " + fileName;
+    
+    for(int i = 0; i < lines.size(); ++i)
+    {
+        fwrite(&lines[i][0], lines[i].size(), 1, file);
+        fputc('\n', file);
+    }
+}
+
