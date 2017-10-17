@@ -14,8 +14,8 @@ public:
 private:
     Token& currentToken()
     {
-        if(currentTokenId < (int)tokens.size())
-            return tokens[currentTokenId];
+        if(currentTokenId < (int)tokens->size())
+            return (*tokens)[currentTokenId];
 
         return lastToken;
     }
@@ -47,7 +47,14 @@ private:
             nextToken();
     }
     
+    LabelNode* generateTempLabel()
+    {
+        return ast.addLabelNode("L_" + std::to_string(nextLabelId++), -1, -1);
+    }
+    
     void prevToken() { if(currentTokenId > 0) --currentTokenId; }
+    
+    CodeBlockNode* parseString(std::string str);
     
     ExpressionNode* parseExpression();
     ExpressionNode* parseTerm();
@@ -75,10 +82,13 @@ private:
     
     ExpressionNode* parseCondition();
     
+    CodeBlockNode* transformForLoop(ForLoopNode* node);
+    
     void throwErrorAtCurrentLocation(std::string errorMessage);
 
-    std::vector<Token>& tokens;
+    std::vector<Token>* tokens;
     int currentTokenId;
     Token lastToken;
     Ast ast;
+    int nextLabelId;
 };

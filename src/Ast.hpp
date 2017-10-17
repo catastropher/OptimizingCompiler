@@ -146,7 +146,7 @@ struct EndNode : StatementNode
 
 struct LValueNode : AstNode
 {
-    
+    virtual FactorNode* getFactorNode() = 0;
 };
 
 struct IntLValueNode : LValueNode
@@ -154,6 +154,11 @@ struct IntLValueNode : LValueNode
     IntLValueNode(IntDeclNode* var_) : var(var_) { }
     
     void accept(AstVisitor& v);
+    
+    FactorNode* getFactorNode()
+    {
+        return new IntVarFactor(var);
+    }
     
     IntDeclNode* var;
 };
@@ -164,7 +169,12 @@ struct OneDimensionalListLValueNode : LValueNode
         : var(var_), index(index_) { }
         
     void accept(AstVisitor& v);
-        
+    
+    FactorNode* getFactorNode()
+    {
+        return new OneDimensionalListFactor(var, index);
+    }
+    
     OneDimensionalListDecl* var;
     ExpressionNode* index;
 };
@@ -181,14 +191,22 @@ struct LetStatementNode : StatementNode
 
 struct CodeBlockNode : StatementNode
 {
+    CodeBlockNode() : needCurlyBraces(true) { }
+    
     void addStatement(StatementNode* node)
     {
         statements.push_back(node);
     }
     
+    void disableCurlyBraces()
+    {
+        needCurlyBraces = false;
+    }
+    
     void accept(AstVisitor& v);
     
     std::vector<StatementNode*> statements;
+    bool needCurlyBraces;
 };
 
 struct ForLoopNode : StatementNode

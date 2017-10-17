@@ -1,11 +1,13 @@
 #include <iostream>
 
 #include "Parser.hpp"
+#include "Lexer.hpp"
 
 Parser::Parser(std::vector<Token>& tokens_)
-    : tokens(tokens_),
+    : tokens(&tokens_),
     currentTokenId(0),
-    lastToken(Token(TOK_INVALID, "", -1, -1))
+    lastToken(Token(TOK_INVALID, "", -1, -1)),
+    nextLabelId(0)
 {
     
 }
@@ -214,7 +216,7 @@ StatementNode* Parser::parseStatement()
     switch(currentToken().type)
     {
         case TOK_LET:       return parseLetStatement();
-        case TOK_FOR:       return parseForLoop();
+        case TOK_FOR:       return transformForLoop(parseForLoop());
         case TOK_GOTO:      return parseGoto();
         case TOK_LABEL:     return parseLabel();
         case TOK_WHILE:     return parseWhileLoop();
@@ -442,4 +444,66 @@ InputNode* Parser::parseInput()
     LValueNode* dest = parseLValue();
     return ast.addInputNode(dest);
 }
+
+CodeBlockNode* Parser::transformForLoop(ForLoopNode* node)
+{
+    CodeBlockNode* block = ast.addCodeBlockNode();
+    block->disableCurlyBraces();
+    
+    block->addStatement(ast.addLetStatementNode(node->var, node->lowerBound));
+    
+    LabelNode* loopLabel = generateTempLabel();
+    
+    block->addStatement(loopLabel);
+    
+    node->body->disableCurlyBraces();
+    block->addStatement(node->body);
+    
+    block->addStatement
+    (
+        ast.addLetStatementNode
+        (
+            node->var,
+            ast.newBinaryOpNode
+            (
+                node->var->getFactorNode(),
+                TOK_ADD,
+                node->increment
+            )
+        )
+    );
+    
+    block->addStatement
+    (
+        ast.addIfNode
+        (
+            ast.newBinaryOpNode
+            (
+                node->var->getFactorNode(),
+                TOK_LE,
+                node->upperBound
+            ),
+            ast.addGotoNode(loopLabel->name, -1, -1)
+        )
+    );
+    
+    return block;
+}
+
+CodeBlockNode* Parser::parseString(std::string str)
+{
+    Lexer lexer(str);
+    auto newTokens = lexer.lexTokens();
+    
+    int saveCurrentTokenId = currentTokenId;
+    auto saveTokens = tokens;
+    
+    CodeBlockNode* newBlock = parseCodeBlock(TOK_END);
+    
+    currentTokenId = saveCurrentTokenId;
+    tokens = saveTokens;
+    
+    return newBlock;
+}
+
 

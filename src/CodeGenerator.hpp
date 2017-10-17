@@ -116,15 +116,21 @@ struct CodeGenerator : AstVisitor
     
     void visit(CodeBlockNode* node)
     {
-        addLine("{");
-        ++currentIndent;
+        if(node->needCurlyBraces)
+        {
+            addLine("{");
+            ++currentIndent;
+        }
         
         for(StatementNode* s : node->statements)
             s->accept(*this);
         
-        --currentIndent;
-        addLine("}");
-        addLine("");
+        if(node->needCurlyBraces)
+        {
+            --currentIndent;
+            addLine("}");
+            addLine("");
+        }
     }
     
     void visit(IfNode* node)
