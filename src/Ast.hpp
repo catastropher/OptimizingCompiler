@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <set>
 
 #include "Token.hpp"
 
@@ -404,7 +405,11 @@ public:
     {
         LabelNode* newNode = new LabelNode(name, line, col);
         addNode(newNode);
-        labelNames.push_back(name);
+        
+        if(labelNames.count(name) != 0)
+            throw "Label " + name + " already exists";
+            
+        labelNames.insert(name);
         return newNode;
     }
     
@@ -504,6 +509,6 @@ private:
     std::vector<VarDeclNode*> vars;
     CodeBlockNode* body;
     std::string title;
-    std::vector<std::string> labelNames;
+    std::set<std::string> labelNames;
 };
 

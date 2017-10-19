@@ -376,8 +376,17 @@ LabelNode* Parser::parseLabel()
     
     std::string name = currentToken().value;
     
-    LabelNode* newNode = ast.addLabelNode(name, currentToken().line, currentToken().col);
-    nextToken();
+    LabelNode* newNode;
+    
+    try
+    {
+        newNode = ast.addLabelNode(name, currentToken().line, currentToken().col);
+        nextToken();
+    }
+    catch(std::string error)
+    {
+        throwErrorAtCurrentLocation(error);
+    }
     
     return newNode;
 }
