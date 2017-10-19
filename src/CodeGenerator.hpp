@@ -116,6 +116,11 @@ struct CodeGenerator : AstVisitor
     
     void visit(CodeBlockNode* node)
     {
+        if(BasicBlockNode* basicBlockNode = dynamic_cast<BasicBlockNode*>(node))
+        {
+            addLine("// Begin basic block");
+        }
+        
         if(node->needCurlyBraces)
         {
             addLine("{");

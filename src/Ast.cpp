@@ -1,5 +1,6 @@
 #include "Ast.hpp"
 #include "AstVisitor.hpp"
+#include "BasicBlockBuilder.hpp"
 
 void Ast::accept(AstVisitor& v)
 {
@@ -11,6 +12,11 @@ void Ast::accepVars(AstVisitor& v)
     v.visitVars(vars);
 }
 
+void Ast::splitIntoBasicBlocks()
+{
+    BasicBlockBuilder builder(*this);
+    setBody(builder.buildBasicBlocks());
+}
 
 void IntegerNode::accept(AstVisitor& visitor)
 {

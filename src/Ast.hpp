@@ -306,9 +306,6 @@ struct BasicBlockNode : CodeBlockNode
     {
         needCurlyBraces = false;
     }
-    
-    BasicBlockNode* next;
-    BasicBlockNode* prev;
 };
 
 class Ast
@@ -462,6 +459,13 @@ public:
         return newNode;
     }
     
+    BasicBlockNode* addBasicBlockNode()
+    {
+        auto newNode = new BasicBlockNode;
+        addNode(newNode);
+        return newNode;
+    }
+    
     VarDeclNode* getVarByName(std::string name)
     {
         for(VarDeclNode* var : vars)
@@ -487,6 +491,18 @@ public:
     {
         return title;
     }
+    
+    std::set<std::string>& getAllLabelNames()
+    {
+        return labelNames;
+    }
+    
+    CodeBlockNode* getBody()
+    {
+        return body;
+    }
+    
+    void splitIntoBasicBlocks();
     
     ~Ast()
     {

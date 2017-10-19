@@ -16,6 +16,8 @@ void compileSource(std::string inputFile, std::string outputFile)
     Parser parser(tokens);
     Ast& ast = parser.parse();
     
+    ast.splitIntoBasicBlocks();
+    
     CodeGenerator gen;
     gen.genCode(ast);
     
