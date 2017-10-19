@@ -134,7 +134,8 @@ void Lexer::changeLastTokenTypeIfKeyword()
 
 void Lexer::lexComment()
 {
-    consumeWhitespace();
+    while(*begin == ' ' || *begin == '\t')
+        advanceTo(begin + 1);
     
     const char* tokenEnd = begin;
     
@@ -144,7 +145,6 @@ void Lexer::lexComment()
     getLastToken().value = std::string(begin, tokenEnd);
     advanceTo(tokenEnd);
 }
-
 
 bool Lexer::lexOperator()
 {

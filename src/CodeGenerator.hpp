@@ -212,6 +212,12 @@ struct CodeGenerator : AstVisitor
         addLine("goto " + node->labelName + ";");
     }
     
+    void visit(RemNode* node)
+    {
+        node->text[0] = toupper(node->text[0]);
+        addLine("// " + node->text);
+    }
+    
     std::string pop()
     {
         std::string top = expStack.top();

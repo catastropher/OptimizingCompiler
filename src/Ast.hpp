@@ -308,6 +308,15 @@ struct BasicBlockNode : CodeBlockNode
     }
 };
 
+struct RemNode : StatementNode
+{
+    RemNode(std::string text_) : text(text_) { }
+    
+    void accept(AstVisitor& v);
+    
+    std::string text;
+};
+
 class Ast
 {
 public:
@@ -462,6 +471,13 @@ public:
     BasicBlockNode* addBasicBlockNode()
     {
         auto newNode = new BasicBlockNode;
+        addNode(newNode);
+        return newNode;
+    }
+    
+    RemNode* addRemNode(std::string text)
+    {
+        auto newNode = new RemNode(text);
         addNode(newNode);
         return newNode;
     }

@@ -109,3 +109,8 @@ void InputNode::accept(AstVisitor& visitor)
     visitor.visit(this);
 }
 
+void RemNode::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+

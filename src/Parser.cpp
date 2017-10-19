@@ -222,6 +222,7 @@ StatementNode* Parser::parseStatement()
         case TOK_PROMPT:    return parsePrompt();
         case TOK_PRINT:     return parsePrint();
         case TOK_INPUT:     return parseInput();
+        case TOK_REM:       return parseComment();
         
         default:
             break;
@@ -230,6 +231,14 @@ StatementNode* Parser::parseStatement()
     throwErrorAtCurrentLocation("Expected statement");
     return nullptr;
 }
+
+RemNode* Parser::parseComment()
+{    
+    RemNode* node = ast.addRemNode(currentToken().value);
+    nextToken();
+    return node;
+}
+
 
 LValueNode* Parser::parseLValue()
 {
@@ -422,6 +431,12 @@ IfNode* Parser::parseIf()
     
     StatementNode* body = parseStatement();
     
+    if(dynamic_cast<RemNode*>(body))
+    {
+        prevToken();
+        throwErrorAtCurrentLocation("Comment inside of if body leading to invalid code (comments are considered statements)");
+    }
+    
     return ast.addIfNode(condition, body);
 }
 
@@ -540,5 +555,4 @@ CodeBlockNode* Parser::parseString(std::string str)
     
     return newBlock;
 }
-
 

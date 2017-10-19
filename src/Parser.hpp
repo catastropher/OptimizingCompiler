@@ -38,10 +38,7 @@ private:
                 
     void nextToken()
     {
-        ++currentTokenId; 
-        
-        if(currentToken().type == TOK_REM)
-            nextToken();
+        ++currentTokenId;
     }
     
     LabelNode* generateTempLabel()
@@ -62,6 +59,7 @@ private:
     void parseHeader();
     
     StatementNode* parseStatement();
+    RemNode* parseComment();
     LValueNode* parseLValue();
     LetStatementNode* parseLetStatement();
     
