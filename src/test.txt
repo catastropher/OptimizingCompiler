@@ -24,7 +24,7 @@ begin
    let y = 950
    while (y > -950)
       let x = -2100
-      while (x < 1000)
+      while (x < 1000) jioj
          let on = 0
          rem check pixel
          let real = 0

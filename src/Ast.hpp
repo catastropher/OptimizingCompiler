@@ -235,17 +235,19 @@ struct LabelNode : StatementNode
     int col;
 };
 
+struct BasicBlockNode;
+
 struct GotoNode : StatementNode
 {
     GotoNode(std::string labelName_, int line_, int col_)
-        : labelName(labelName_), line(line_), col(col_) { }
+        : labelName(labelName_), line(line_), col(col_), targetBlock(nullptr) { }
     
     void accept(AstVisitor& v);
     
     std::string labelName;
-    LabelNode* target;
     int line;
     int col;
+    BasicBlockNode* targetBlock;
 };
 
 struct WhileLoopNode : StatementNode
@@ -295,6 +297,17 @@ struct InputNode : StatementNode
     void accept(AstVisitor& v);
     
     LValueNode* var;
+};
+
+struct BasicBlockNode : CodeBlockNode
+{
+    BasicBlockNode()
+    {
+        needCurlyBraces = false;
+    }
+    
+    BasicBlockNode* next;
+    BasicBlockNode* prev;
 };
 
 class Ast
@@ -391,6 +404,7 @@ public:
     {
         LabelNode* newNode = new LabelNode(name, line, col);
         addNode(newNode);
+        labelNames.push_back(name);
         return newNode;
     }
     
@@ -490,5 +504,6 @@ private:
     std::vector<VarDeclNode*> vars;
     CodeBlockNode* body;
     std::string title;
+    std::vector<std::string> labelNames;
 };
 
