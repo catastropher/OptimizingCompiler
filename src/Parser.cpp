@@ -2,6 +2,7 @@
 
 #include "Parser.hpp"
 #include "Lexer.hpp"
+#include "Error.hpp"
 
 Parser::Parser(std::vector<Token>& tokens_)
     : tokens(&tokens_),
@@ -137,9 +138,7 @@ ExpressionNode* Parser::parseTerm()
 
 void Parser::throwErrorAtCurrentLocation(std::string errorMessage)
 {
-    std::cerr << "Error on line " << currentToken().line << ", col " << currentToken().col << ": " << errorMessage << std::endl;
-    
-    throw "Error in parsing";
+    throw CompileError(errorMessage, "Parsing", currentToken().line, currentToken().col);
 }
 
 bool Parser::parseVarDecl()

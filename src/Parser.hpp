@@ -33,10 +33,7 @@ private:
     {
         // TODO: name the tokens and print what was expected
         if(currentToken().type != expectedType)
-            throwErrorAtCurrentLocation(
-              "Unexpected token: " + currentToken().value
-              + " Expected: " + Token::getTokenName(expectedType)
-              );
+            throwErrorAtCurrentLocation("Expected \"" + Token::getTokenName(expectedType) + "\" (found \"" + currentToken().value + "\")");
     }
                 
     void nextToken()

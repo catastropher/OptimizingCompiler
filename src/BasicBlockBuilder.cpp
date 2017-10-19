@@ -1,6 +1,7 @@
 #include <list>
 
 #include "BasicBlockBuilder.hpp"
+#include "Error.hpp"
 
 CodeBlockNode* BasicBlockBuilder::buildBasicBlocks()
 {
@@ -56,7 +57,7 @@ void BasicBlockBuilder::addCodeBlock(CodeBlockNode* node)
         {
             if(labelBlocks.count(gotoNode->labelName) == 0)
             {
-                throw "No such label: " + gotoNode->labelName;
+                throw CompileError("No such label: " + gotoNode->labelName, "Basic block partitioning", gotoNode->line, gotoNode->col);
             }
             
             gotoNode->targetBlock = labelBlocks[gotoNode->labelName];

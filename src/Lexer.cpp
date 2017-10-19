@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Lexer.hpp"
+#include "Error.hpp"
 
 Lexer::Lexer(std::string inputString_)
     : inputString(inputString_),
@@ -225,58 +226,8 @@ bool Lexer::lexString()
     return true;
 }
 
-std::string Lexer::currentLineAndColumn()
-{
-    int line = 1;
-    int col = 1;
-    
-    const char* str = &inputString[0];
-    while(str < begin)
-    {
-        if(*str == '\n')
-        {
-            ++line;
-            col = 1;
-        }
-        else
-        {
-            ++col;
-        }
-        
-        ++str;
-    }
-    
-    return "line " + std::to_string(line) + ", col " + std::to_string(col);
-}
-
-void Lexer::printCurrentLine()
-{
-    const char* strBegin = &inputString[0];
-    const char* lineStart = begin;
-    
-    while(lineStart > strBegin && *(lineStart - 1) != '\n')
-        --lineStart;
-    
-    int colNumber = begin - lineStart;
-    while(lineStart < end && *lineStart != '\n')
-    {
-        std::cerr << *lineStart;
-        ++lineStart;
-    }
-    
-    std::cerr << std::endl;
-    
-    for(int i = 0; i < colNumber; ++i)
-        std::cerr << " ";
-    
-    std::cerr << "^\n";
-}
-
 void Lexer::throwErrorAtCurrentLocation(std::string errorMessage)
 {
-    std::cerr << "Error on " << currentLineAndColumn() << ": " << errorMessage << std::endl;
-    printCurrentLine();
-    
-    throw "Error in lexing";
+    throw CompileError(errorMessage, "Lexing", currentLine, currentCol);
 }
 

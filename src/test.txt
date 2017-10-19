@@ -2,13 +2,10 @@ title mandelbrot by x. shen modified t. o'neil 4.1.2013
 var
     int x
 begin
-    prompt "Hello world\n"
+    label x
     
-    while(x < 5)
-        let x = x + 1
-        print x
-        goto done
-    endwhile
-    
+    let x = x + 1
+    goto done
+
 end
   

@@ -5,31 +5,41 @@
 #include "Ast.hpp"
 #include "Parser.hpp"
 #include "CodeGenerator.hpp"
+#include "Error.hpp"
 
 void compileSource(std::string inputFile, std::string outputFile)
 {
-    std::string input = readFileContents(inputFile);
-        
-    Lexer lexer(input);
-    std::vector<Token>& tokens = lexer.lexTokens();
+    std::string input;
     
-    Parser parser(tokens);
-    Ast& ast = parser.parse();
-    
-    ast.splitIntoBasicBlocks();
-    
-    CodeGenerator gen;
-    gen.genCode(ast);
-    
-    for(auto line : gen.output)
+    try
     {
-        std::cout << line << "\n";
+        input = readFileContents(inputFile);
+            
+        Lexer lexer(input);
+        std::vector<Token>& tokens = lexer.lexTokens();
+        
+        Parser parser(tokens);
+        Ast& ast = parser.parse();
+        
+        ast.splitIntoBasicBlocks();
+        
+        CodeGenerator gen;
+        gen.genCode(ast);
+        
+        for(auto line : gen.output)
+        {
+            std::cout << line << "\n";
+        }
+        
+        std::cout << "------------------\n";
+        std::cout << "Compilation successful (written to " << outputFile << ")\n"; 
+        
+        writeFileContents(outputFile, gen.output);
     }
-    
-    std::cout << "------------------\n";
-    std::cout << "Compilation successful (written to " << outputFile << ")\n"; 
-    
-    writeFileContents(outputFile, gen.output);
+    catch(CompileError& err)
+    {
+        err.print(input);
+    }
 }
 
 int main(int argc, char* argv[])
