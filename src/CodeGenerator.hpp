@@ -3,6 +3,7 @@
 #include <stack>
 
 #include "AstVisitor.hpp"
+#include "Utils.hpp"
 
 struct CodeGenerator : AstVisitor
 {
@@ -118,7 +119,7 @@ struct CodeGenerator : AstVisitor
     {
         if(BasicBlockNode* basicBlockNode = dynamic_cast<BasicBlockNode*>(node))
         {
-            addLine("// Begin basic block");
+            addBasicBlockCommentLine(basicBlockNode);
         }
         
         if(node->needCurlyBraces)
@@ -136,6 +137,21 @@ struct CodeGenerator : AstVisitor
             addLine("}");
             addLine("");
         }
+    }
+    
+    void addBasicBlockCommentLine(BasicBlockNode* node)
+    {
+        std::string pred = containerToString(node->getPredecessorIds());
+        
+        if(node->id == 0)
+            pred = "entry";
+        
+        std::string succ = containerToString(node->getSuccessorIds());
+        
+        if(succ == "")
+            succ = "exit";
+        
+        addLine("// * block " + std::to_string(node->id) + " pred " + pred + " succ " + succ);
     }
     
     void visit(IfNode* node)

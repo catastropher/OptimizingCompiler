@@ -19,6 +19,7 @@ private:
     void beginLabelBlock(LabelNode* node);
     void addCodeBlock(CodeBlockNode* node);
     void labelBlocksIds();
+    void addGotoNodeTargetBlock(GotoNode* gotoNode);
     
     CodeBlockNode* putBasicBlocksIntoCodeBlock();
     

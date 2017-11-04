@@ -61,17 +61,34 @@ void BasicBlockBuilder::addCodeBlock(CodeBlockNode* node)
                 throw CompileError("No such label: " + gotoNode->labelName, "Basic block partitioning", gotoNode->line, gotoNode->col);
             }
             
-            gotoNode->targetBlock = labelBlocks[gotoNode->labelName];
+            addGotoNodeTargetBlock(gotoNode);
+            
             splitCurrentBlock();
             continue;
         }
         
-        if(dynamic_cast<IfNode*>(s))
+        if(IfNode* ifNode = dynamic_cast<IfNode*>(s))
         {
+            if(GotoNode* gotoNode = dynamic_cast<GotoNode*>(ifNode->body))
+            {
+                addGotoNodeTargetBlock(gotoNode);
+            }
+            else
+            {
+                throw CompileError("If contains statement other than goto", "Basic block partitioning", -1, -1);
+            }
+            
             splitCurrentBlock();
             continue;
         }
     }
+}
+
+void BasicBlockBuilder::addGotoNodeTargetBlock(GotoNode* gotoNode)
+{
+    gotoNode->targetBlock = labelBlocks[gotoNode->labelName];
+    gotoNode->targetBlock->addPredecessor(*currentBlock);
+    (*currentBlock)->addSuccessor(gotoNode->targetBlock);
 }
 
 CodeBlockNode* BasicBlockBuilder::putBasicBlocksIntoCodeBlock()
@@ -80,7 +97,7 @@ CodeBlockNode* BasicBlockBuilder::putBasicBlocksIntoCodeBlock()
     
     for(auto block : blocks)
     {
-        if(block->statements.size() != 0)
+        if(!block->deleted)
             node->addStatement(block);
     }
     
@@ -91,7 +108,24 @@ void BasicBlockBuilder::labelBlocksIds()
 {
     int id = 0;
     
-    for(auto block : blocks)
-        block->setId(id++);
+    auto prev = blocks.end();
+    
+    for(auto block = blocks.begin(); block != blocks.end(); ++block)
+    {
+        if(prev != blocks.end() && !(*prev)->blockEndsInGoto())
+        {
+            (*block)->addPredecessor(*prev);
+            (*prev)->addSuccessor(*block);
+        }
+        
+        if((*block)->predecessors.size() == 0 && id != 0)
+            (*block)->deleted = true;
+            
+        if(!(*block)->deleted)
+        {
+            (*block)->setId(id++);
+            prev = block;
+        }
+    }
 }
 

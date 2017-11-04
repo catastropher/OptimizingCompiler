@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <set>
+#include <algorithm>
 
 #include "Token.hpp"
 
@@ -190,6 +191,21 @@ struct LetStatementNode : StatementNode
     ExpressionNode* rightSide;
 };
 
+struct BasicBlockNode;
+
+struct GotoNode : StatementNode
+{
+    GotoNode(std::string labelName_, int line_, int col_)
+        : labelName(labelName_), line(line_), col(col_), targetBlock(nullptr) { }
+    
+    void accept(AstVisitor& v);
+    
+    std::string labelName;
+    int line;
+    int col;
+    BasicBlockNode* targetBlock;
+};
+
 struct CodeBlockNode : StatementNode
 {
     CodeBlockNode() : needCurlyBraces(true) { }
@@ -202,6 +218,21 @@ struct CodeBlockNode : StatementNode
     void disableCurlyBraces()
     {
         needCurlyBraces = false;
+    }
+    
+    bool blockEndsInGoto()
+    {
+        if(statements.size() == 0)
+            return false;
+        
+        auto lastStatement = statements[statements.size() - 1];
+        
+        if(dynamic_cast<GotoNode*>(lastStatement))
+            return true;
+        else if(CodeBlockNode* block = dynamic_cast<CodeBlockNode*>(lastStatement))
+            return block->blockEndsInGoto();
+        
+        return false;
     }
     
     void accept(AstVisitor& v);
@@ -234,21 +265,6 @@ struct LabelNode : StatementNode
     std::string name;
     int line;
     int col;
-};
-
-struct BasicBlockNode;
-
-struct GotoNode : StatementNode
-{
-    GotoNode(std::string labelName_, int line_, int col_)
-        : labelName(labelName_), line(line_), col(col_), targetBlock(nullptr) { }
-    
-    void accept(AstVisitor& v);
-    
-    std::string labelName;
-    int line;
-    int col;
-    BasicBlockNode* targetBlock;
 };
 
 struct WhileLoopNode : StatementNode
@@ -305,6 +321,7 @@ struct BasicBlockNode : CodeBlockNode
     BasicBlockNode()
     {
         needCurlyBraces = false;
+        deleted = false;
     }
     
     void setId(int id_)
@@ -312,9 +329,56 @@ struct BasicBlockNode : CodeBlockNode
         id = id_;
     }
     
-    std::vector<BasicBlockNode*> successors;
-    std::vector<BasicBlockNode*> predecessors;
+    void inheritSuccessorsFrom(BasicBlockNode* block)
+    {
+        for(auto b : block->successors)
+            successors.insert(b);
+    }
+    
+    void inheritPredecessorsFrom(BasicBlockNode* block)
+    {
+        for(auto b : block->predecessors)
+            predecessors.insert(b);
+    }
+    
+    void addSuccessor(BasicBlockNode* block)
+    {
+        successors.insert(block);
+    }
+    
+    void addPredecessor(BasicBlockNode* block)
+    {
+        predecessors.insert(block);
+    }
+    
+    std::vector<int> getSuccessorIds()
+    {
+        std::vector<int> ids;
+        
+        for(auto block : successors)
+            ids.push_back(block->id);
+        
+        std::sort(ids.begin(), ids.end());
+        
+        return ids;
+    }
+    
+    std::vector<int> getPredecessorIds()
+    {
+        std::vector<int> ids;
+        
+        for(auto block : predecessors)
+            ids.push_back(block->id);
+        
+        std::sort(ids.begin(), ids.end());
+        
+        return ids;
+    }
+    
+    std::set<BasicBlockNode*> successors;
+    std::set<BasicBlockNode*> predecessors;
     int id;
+    bool deleted;
 };
 
 struct RemNode : StatementNode
