@@ -8,6 +8,7 @@ CodeBlockNode* BasicBlockBuilder::buildBasicBlocks()
     createBlocksForLabels();
     currentBlock = blocks.insert(blocks.begin(), ast.addBasicBlockNode());
     addCodeBlock(ast.getBody());
+    labelBlocksIds();
     
     return putBasicBlocksIntoCodeBlock();
     
@@ -86,5 +87,11 @@ CodeBlockNode* BasicBlockBuilder::putBasicBlocksIntoCodeBlock()
     return node;
 }
 
-
+void BasicBlockBuilder::labelBlocksIds()
+{
+    int id = 0;
+    
+    for(auto block : blocks)
+        block->setId(id++);
+}
 

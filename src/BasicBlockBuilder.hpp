@@ -18,6 +18,7 @@ private:
     void insertBlockAfterCurrentBlock(BasicBlockNode* node);
     void beginLabelBlock(LabelNode* node);
     void addCodeBlock(CodeBlockNode* node);
+    void labelBlocksIds();
     
     CodeBlockNode* putBasicBlocksIntoCodeBlock();
     

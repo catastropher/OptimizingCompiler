@@ -306,6 +306,15 @@ struct BasicBlockNode : CodeBlockNode
     {
         needCurlyBraces = false;
     }
+    
+    void setId(int id_)
+    {
+        id = id_;
+    }
+    
+    std::vector<BasicBlockNode*> successors;
+    std::vector<BasicBlockNode*> predecessors;
+    int id;
 };
 
 struct RemNode : StatementNode
