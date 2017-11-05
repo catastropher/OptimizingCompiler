@@ -6,6 +6,7 @@
 #include "Parser.hpp"
 #include "CodeGenerator.hpp"
 #include "Error.hpp"
+#include "SsaBuilder.hpp"
 
 void compileSource(std::string inputFile, std::string outputFile)
 {
@@ -22,6 +23,9 @@ void compileSource(std::string inputFile, std::string outputFile)
         Ast& ast = parser.parse();
         
         ast.splitIntoBasicBlocks();
+        
+        SsaBuilder ssaBuilder(ast.getBody(), ast);
+        ssaBuilder.buildSsa();
         
         CodeGenerator gen;
         gen.genCode(ast);

@@ -60,8 +60,18 @@ begin
          let on = 1
          rem end check pixel
          label bail
-         if (on == 1) then prompt "X"
-         if (on == 0) then prompt " "
+         if (on != 1) then goto skip1
+         
+         prompt "X"
+         
+    label skip1
+         
+         if (on != 0) then goto skip2
+         
+         prompt " "
+         
+    label skip2
+         
          let x = x + 40
       endwhile
       prompt "\n"

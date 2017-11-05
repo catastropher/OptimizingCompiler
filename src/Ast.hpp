@@ -5,6 +5,7 @@
 #include <iostream>
 #include <set>
 #include <algorithm>
+#include <map>
 
 #include "Token.hpp"
 
@@ -115,17 +116,30 @@ struct UnaryOpNode : ExpressionNode
 struct VarDeclNode : AstNode
 {
     VarDeclNode(std::string name_, int line_, int col_)
-        : name(name_), line(line_), col(col_) { }
+        : name(name_), line(line_), col(col_), definitionCount(0) { }
     
     std::string name;
     int line;
     int col;
+    int definitionCount;
 };
+
+struct SsaIntLValueNode;
 
 struct IntDeclNode : VarDeclNode
 {
     IntDeclNode(std::string name_, int line_, int col_)
         : VarDeclNode(name_, line_, col_) { }
+        
+    void addSsaDefinition(SsaIntLValueNode* newDefinition)
+    {
+        ++definitionCount;
+    }
+    
+    void removeSsaDefinition(SsaIntLValueNode* definition)
+    {
+        --definitionCount;
+    }
 };
 
 struct OneDimensionalListDecl : VarDeclNode
@@ -163,6 +177,13 @@ struct IntLValueNode : LValueNode
     }
     
     IntDeclNode* var;
+};
+
+struct SsaIntLValueNode : IntLValueNode
+{
+    SsaIntLValueNode(IntDeclNode* var_) : IntLValueNode(var_), refCount(0) { }
+    
+    int refCount;
 };
 
 struct OneDimensionalListLValueNode : LValueNode
@@ -316,6 +337,48 @@ struct InputNode : StatementNode
     LValueNode* var;
 };
 
+struct VarDefSet
+{
+    VarDefSet() : changed(false) { }
+    
+    void replaceDefinition(SsaIntLValueNode* node)
+    {
+        defs[node->var].clear();
+        defs[node->var].insert(node);
+    }
+    
+    bool wasChanged()
+    {
+        bool oldChanged = changed;
+        changed = false;
+        return oldChanged;
+    }
+    
+    void clear()
+    {
+        defs.clear();
+    }
+    
+    void unionSet(VarDefSet& s)
+    {
+        for(auto d : s.defs)
+            defs[d.first].insert(d.second.begin(), d.second.end());
+    }
+    
+    bool operator==(const VarDefSet& s) const
+    {
+        return defs == s.defs;
+    }
+    
+    bool operator!=(const VarDefSet& s) const
+    {
+        return !(*this == s);
+    }
+    
+    std::map<IntDeclNode*, std::set< SsaIntLValueNode* >> defs;
+    bool changed;
+};
+
 struct BasicBlockNode : CodeBlockNode
 {
     BasicBlockNode()
@@ -375,10 +438,21 @@ struct BasicBlockNode : CodeBlockNode
         return ids;
     }
     
+    void recalculateInSet()
+    {
+        varDefIn.clear();
+        
+        for(BasicBlockNode* successor : successors)
+            varDefIn.unionSet(successor->varDefIn);
+    }
+    
     std::set<BasicBlockNode*> successors;
     std::set<BasicBlockNode*> predecessors;
     int id;
     bool deleted;
+    
+    VarDefSet varDefIn;
+    VarDefSet varDefOut;
 };
 
 struct RemNode : StatementNode
@@ -551,6 +625,14 @@ public:
     RemNode* addRemNode(std::string text)
     {
         auto newNode = new RemNode(text);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    SsaIntLValueNode* addSsaIntLValueNode(IntLValueNode* node)
+    {
+        auto newNode = new SsaIntLValueNode(node->var);
+        node->var->addSsaDefinition(newNode);
         addNode(newNode);
         return newNode;
     }
