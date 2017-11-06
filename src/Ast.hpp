@@ -14,12 +14,14 @@ struct AstVisitor;
 struct AstNode
 {
     virtual void accept(AstVisitor& v) { }
+    virtual void acceptRecursive(AstVisitor& v) { }
     virtual ~AstNode() { }
 };
 
 struct ExpressionNode : AstNode
 {
     virtual int tryEvaluate() { throw "Can't evaluate expression"; }
+    virtual void acceptRecursive(AstVisitor& v) = 0;
     
     virtual ~ExpressionNode() { }
 };
@@ -35,6 +37,7 @@ struct IntegerNode : FactorNode
     
     int tryEvaluate() { return value; }
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     int value;
 };
@@ -45,6 +48,7 @@ struct IntVarFactor : FactorNode
 {
     IntVarFactor(IntDeclNode* var_) : var(var_) { }
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     IntDeclNode* var;
 };
@@ -57,6 +61,7 @@ struct OneDimensionalListFactor : FactorNode
         : var(var_), index(index_) { }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     OneDimensionalListDecl* var;
     ExpressionNode* index;
@@ -86,6 +91,7 @@ struct BinaryOpNode : ExpressionNode
     }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     ExpressionNode* left;
     TokenType op;
@@ -108,6 +114,7 @@ struct UnaryOpNode : ExpressionNode
     }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     ExpressionNode* value;
     TokenType op;
@@ -142,6 +149,11 @@ struct IntDeclNode : VarDeclNode
     }
 };
 
+struct PhiNode : FactorNode
+{
+    std::vector<SsaIntLValueNode*> joinNodes;
+};
+
 struct OneDimensionalListDecl : VarDeclNode
 {
     OneDimensionalListDecl(std::string name_, int line_, int col_, int totalElements_)
@@ -170,6 +182,7 @@ struct IntLValueNode : LValueNode
     IntLValueNode(IntDeclNode* var_) : var(var_) { }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     FactorNode* getFactorNode()
     {
@@ -192,6 +205,7 @@ struct OneDimensionalListLValueNode : LValueNode
         : var(var_), index(index_) { }
         
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     FactorNode* getFactorNode()
     {
@@ -207,6 +221,7 @@ struct LetStatementNode : StatementNode
     LetStatementNode(LValueNode* leftSide_, ExpressionNode* rightSide_) : leftSide(leftSide_), rightSide(rightSide_) { }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     LValueNode* leftSide;
     ExpressionNode* rightSide;
@@ -220,6 +235,7 @@ struct GotoNode : StatementNode
         : labelName(labelName_), line(line_), col(col_), targetBlock(nullptr) { }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     std::string labelName;
     int line;
@@ -257,6 +273,7 @@ struct CodeBlockNode : StatementNode
     }
     
     void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
     
     std::vector<StatementNode*> statements;
     bool needCurlyBraces;
@@ -305,6 +322,7 @@ struct IfNode : StatementNode
         : condition(condition_), body(body_) { }
         
     void accept(AstVisitor& v);;
+    virtual void acceptRecursive(AstVisitor& v);
     
     ExpressionNode* condition;
     StatementNode* body;
@@ -314,7 +332,7 @@ struct PrintNode : StatementNode
 {
     PrintNode(ExpressionNode* value_) : value(value_) { }
     
-    void accept(AstVisitor& v);;
+    void accept(AstVisitor& v);
     
     ExpressionNode* value;
 };
@@ -450,6 +468,8 @@ struct BasicBlockNode : CodeBlockNode
     std::set<BasicBlockNode*> predecessors;
     int id;
     bool deleted;
+    
+    virtual void acceptRecursive(AstVisitor& v);
     
     VarDefSet varDefIn;
     VarDefSet varDefOut;

@@ -3,8 +3,9 @@
 #include <queue>
 
 #include "Ast.hpp"
+#include "AstVisitor.hpp"
 
-class SsaBuilder
+class SsaBuilder : AstVisitor
 {
 public:
     SsaBuilder(CodeBlockNode* programBody_, Ast& ast_) : programBody(programBody_), ast(ast_)
@@ -28,6 +29,8 @@ public:
             workQueue.pop();
             processBasicBlock(block);
         }
+        
+        programBody->acceptRecursive(*this);
     }
     
 private:
@@ -70,8 +73,19 @@ private:
         return true;
     }
     
+    void visit(IntLValueNode* varNode)
+    {
+        printf("Visit assign %s\n", varNode->var->name.c_str());
+    }
+    
+    void visit(IntVarFactor* varNode)
+    {
+        printf("Visit %s\n", varNode->var->name.c_str());
+    }
+    
     CodeBlockNode* programBody;
     Ast& ast;
     std::queue<BasicBlockNode*> workQueue;
+    VarDefSet* currentDefSet;
 };
 
