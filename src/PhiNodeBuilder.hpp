@@ -52,6 +52,9 @@ private:
     void visit(IntVarFactor* node)
     {
         auto defs = activeVars.getActiveDefsForVar(node->var);
+     
+        if(defs.size() == 0)
+            throw "No defs for " + node->var->name;
         
         if(defs.size() != 1)
             throw "Not just one def for " + node->var->name;

@@ -51,7 +51,9 @@ struct CodeGenerator : AstVisitor
     
     void visit(PhiNode* node)
     {
-        push("{" + std::to_string(node->joinNodes.size()) + "}");
+        auto var = *node->joinNodes.begin();
+        var->accept(*this);
+        //push("{" + std::to_string(node->joinNodes.size()) + "}");
     }
     
     void visit(IntegerNode* node)
@@ -111,6 +113,9 @@ struct CodeGenerator : AstVisitor
     
     void visit(LetStatementNode* node)
     {
+        if(dynamic_cast<PhiNode*>(node->rightSide))
+            return;
+        
         node->rightSide->accept(*this);
         node->leftSide->accept(*this);
         

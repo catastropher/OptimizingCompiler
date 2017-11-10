@@ -4,6 +4,7 @@
 #include "SsaBuilder.hpp"
 #include "PhiNodeBuilder.hpp"
 #include "ExpressionFolder.hpp"
+#include "DeadCodeEliminator.hpp"
 
 class Optimizer
 {
@@ -11,7 +12,8 @@ public:
     Optimizer(CodeBlockNode* programBody_, Ast& ast_)
         : programBody(programBody_),
         ast(ast_),
-        expressionFolder(programBody, ast)
+        expressionFolder(programBody, ast),
+        eliminator(programBody)
         { }
         
     void optimize()
@@ -31,6 +33,7 @@ private:
         bool success = false;
         
         success |= expressionFolder.foldExpressions();
+        success |= eliminator.eliminateDeadCode();
         
         return success;
     }
@@ -39,4 +42,5 @@ private:
     CodeBlockNode* programBody;
     Ast& ast;
     ExpressionFolder expressionFolder;
+    DeadCodeEliminator eliminator;
 };

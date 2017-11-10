@@ -122,6 +122,7 @@ void LetStatementNode::acceptRecursive(AstVisitor& visitor)
     visitor.exitNode(rightSide);
     
     visitor.visit(this);
+    visitor.visit((StatementNode*)this);
 }
 
 void CodeBlockNode::accept(AstVisitor& visitor)
@@ -147,6 +148,7 @@ void GotoNode::accept(AstVisitor& visitor)
 void GotoNode::acceptRecursive(AstVisitor& visitor)
 {
     visitor.visit(this);
+    visitor.visit((StatementNode*)this);
 }
 
 void WhileLoopNode::accept(AstVisitor& visitor)
@@ -172,6 +174,7 @@ void IfNode::acceptRecursive(AstVisitor& visitor)
     visitor.exitNode(body);
     
     visitor.visit(this);
+    visitor.visit((StatementNode*)this);
 }
 
 void PrintNode::accept(AstVisitor& visitor)
@@ -197,9 +200,13 @@ void RemNode::accept(AstVisitor& visitor)
 void CodeBlockNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+    v.visit((StatementNode*)this);
     
     for(auto& node : statements)
     {
+        if(node->markedAsDead)
+            continue;
+        
         v.enterNode(node);
         node->acceptRecursive(v);
         node = dynamic_cast<StatementNode*>(v.lastNode());
@@ -210,9 +217,13 @@ void CodeBlockNode::acceptRecursive(AstVisitor& v)
 void BasicBlockNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+    v.visit((StatementNode*)this);
     
     for(auto& node : statements)
     {
+        if(node->markedAsDead)
+            continue;
+        
         v.enterNode(node);
         node->acceptRecursive(v);
         node = dynamic_cast<StatementNode*>(v.lastNode());
@@ -238,6 +249,29 @@ void OneDimensionalListLValueNode::acceptRecursive(AstVisitor& v)
 void PromptNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+    v.visit((StatementNode*)this);
+}
+
+void PrintNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+    v.visit((StatementNode*)this);
+    
+    v.enterNode(value);
+    value->acceptRecursive(v);
+    value = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(value);
+}
+
+void InputNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+    v.visit((StatementNode*)this);
+    
+    v.enterNode(var);
+    var->acceptRecursive(v);
+    var = dynamic_cast<LValueNode*>(v.lastNode());
+    v.exitNode(var);
 }
 
 void PhiNode::acceptRecursive(AstVisitor& v)
@@ -260,6 +294,8 @@ void SsaIntVarFactor::acceptRecursive(AstVisitor& v)
     v.visit(this);
 }
 
-
-
+void SsaIntLValueNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
 

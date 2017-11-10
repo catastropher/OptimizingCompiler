@@ -229,6 +229,8 @@ struct SsaIntLValueNode : IntLValueNode
         value = val;
     }
     
+    virtual void acceptRecursive(AstVisitor& v);
+    
     BasicBlockNode* basicBlock;
     LetStatementNode* definitionNode;
     int refCount;
@@ -380,6 +382,7 @@ struct PrintNode : StatementNode
     PrintNode(ExpressionNode* value_) : value(value_) { }
     
     void accept(AstVisitor& v);
+    void acceptRecursive(AstVisitor& v);;
     
     ExpressionNode* value;
 };
@@ -399,6 +402,7 @@ struct InputNode : StatementNode
     InputNode(LValueNode* var_) : var(var_) { }
     
     void accept(AstVisitor& v);
+    void acceptRecursive(AstVisitor& v);
     
     LValueNode* var;
 };
