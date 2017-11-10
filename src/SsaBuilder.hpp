@@ -83,6 +83,5 @@ private:
     CodeBlockNode* programBody;
     Ast& ast;
     std::queue<BasicBlockNode*> workQueue;
-    VarDefSet* currentDefSet;
 };
 

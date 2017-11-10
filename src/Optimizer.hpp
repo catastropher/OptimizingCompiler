@@ -5,6 +5,7 @@
 #include "PhiNodeBuilder.hpp"
 #include "ExpressionFolder.hpp"
 #include "DeadCodeEliminator.hpp"
+#include "CopyPropagator.hpp"
 
 class Optimizer
 {
@@ -13,7 +14,8 @@ public:
         : programBody(programBody_),
         ast(ast_),
         expressionFolder(programBody, ast),
-        eliminator(programBody)
+        eliminator(programBody),
+        copyPropagator(programBody)
         { }
         
     void optimize()
@@ -34,6 +36,7 @@ private:
         
         success |= expressionFolder.foldExpressions();
         success |= eliminator.eliminateDeadCode();
+        success |= copyPropagator.propagateCopies();
         
         return success;
     }
@@ -43,4 +46,5 @@ private:
     Ast& ast;
     ExpressionFolder expressionFolder;
     DeadCodeEliminator eliminator;
+    CopyPropagator copyPropagator;
 };
