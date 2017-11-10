@@ -116,6 +116,7 @@ void BasicBlockBuilder::labelBlocksIds()
         {
             (*block)->addPredecessor(*prev);
             (*prev)->addSuccessor(*block);
+            (*prev)->directSuccessor = *block;
         }
         
         if((*block)->predecessors.size() == 0 && id != 0)

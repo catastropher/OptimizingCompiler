@@ -2,6 +2,7 @@
 
 #include "Ast.hpp"
 #include "AstVisitor.hpp"
+#include "JoinNodeRemover.hpp"
 
 class VariableReplacer : AstVisitor
 {
@@ -13,6 +14,10 @@ public:
     {
         success = false;
         programBody->acceptRecursive(*this);
+        
+        JoinNodeRemover remover(programBody, nodeToReplace);
+        success |= remover.removeFromJoinNodes();
+        
         return success;
     }
     
@@ -24,15 +29,6 @@ private:
             replaceNode(replacement);
             success = true;
         }
-    }
-    
-    void visit(PhiNode* node)
-    {
-        if(node->joinNodes.count(nodeToReplace) == 0)
-            return;
-        
-        node->joinNodes.erase(nodeToReplace);
-        success = true;
     }
     
     CodeBlockNode* programBody;

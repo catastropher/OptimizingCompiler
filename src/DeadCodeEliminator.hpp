@@ -7,6 +7,7 @@
 #include "AstVisitor.hpp"
 #include "IoStatementFinder.hpp"
 #include "StatementKiller.hpp"
+#include "DeadBasicBlockEliminator.hpp"
 
 class DeadCodeEliminator : AstVisitor
 {
@@ -17,9 +18,12 @@ public:
     {
         success = false;
         liveStatements.clear();
+        killedStatements.clear();
         
         IoStatementFinder finder(programBody);
         liveStatements = finder.findIoStatements();
+        
+        printf("Live statements: %d\n", (int)liveStatements.size());
         
         for(auto s : liveStatements)
             workQueue.push(s);
@@ -31,8 +35,19 @@ public:
             s->acceptRecursive(*this);
         }
         
-        StatementKiller killer(programBody, liveStatements);
+        eliminateDeadBasicBlocks();
+        
+        StatementKiller killer(programBody, liveStatements, killedStatements);
         return killer.killDeadStatements() || success;
+    }
+    
+private:    
+    void eliminateDeadBasicBlocks()
+    {
+        DeadBasicBlockEliminator basicBlockEliminator(programBody);
+        auto killedBlocks = basicBlockEliminator.eliminateDeadBlocks();
+        
+        killedStatements.insert(killedBlocks.begin(), killedBlocks.end());
     }
     
     void scheduleNode(StatementNode* node)
@@ -72,9 +87,9 @@ public:
         }
     }
     
-private:
     CodeBlockNode* programBody;
     std::set<StatementNode*> liveStatements;
+    std::set<StatementNode*> killedStatements;
     std::queue<StatementNode*> workQueue;
     bool success;
 };

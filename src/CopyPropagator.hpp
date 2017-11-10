@@ -7,7 +7,7 @@
 class CopyPropagator : AstVisitor
 {
 public:
-    CopyPropagator(CodeBlockNode* programBody_) : programBody(programBody_) { }
+    CopyPropagator(CodeBlockNode* programBody_, Ast& ast_) : programBody(programBody_), ast(ast_) { }
     
     bool propagateCopies()
     {
@@ -18,10 +18,10 @@ public:
     
 private:
     void visit(PhiNode* node)
-    {
+    {        
         if(node->joinNodes.size() == 1)
         {
-            replaceNode(*node->joinNodes.begin());
+            replaceNode(ast.addSsaIntVarFactorNode(*node->joinNodes.begin()));
             success = true;
         }
     }
@@ -44,5 +44,6 @@ private:
     
     CodeBlockNode* programBody;
     bool success;
+    Ast& ast;
 };
 

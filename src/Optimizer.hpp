@@ -15,7 +15,7 @@ public:
         ast(ast_),
         expressionFolder(programBody, ast),
         eliminator(programBody),
-        copyPropagator(programBody)
+        copyPropagator(programBody, ast)
         { }
         
     void optimize()

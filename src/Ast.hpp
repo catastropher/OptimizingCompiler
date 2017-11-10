@@ -479,6 +479,7 @@ struct BasicBlockNode : CodeBlockNode
     {
         needCurlyBraces = false;
         deleted = false;
+        directSuccessor = nullptr;
     }
     
     void setId(int id_)
@@ -549,6 +550,8 @@ struct BasicBlockNode : CodeBlockNode
     
     VarDefSet varDefIn;
     VarDefSet varDefOut;
+    
+    BasicBlockNode* directSuccessor;
 };
 
 struct RemNode : StatementNode
