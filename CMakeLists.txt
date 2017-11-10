@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
 
 project(compiler)
 
-set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11")
+set(CMAKE_CXX_FLAGS "-O2 -Wall -std=c++11 -fsanitize=address -rdynamic -g")
 
 add_executable(compiler
     src/Ast.cpp

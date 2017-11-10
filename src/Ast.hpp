@@ -6,6 +6,7 @@
 #include <set>
 #include <algorithm>
 #include <map>
+#include <list>
 
 #include "Token.hpp"
 
@@ -151,7 +152,15 @@ struct IntDeclNode : VarDeclNode
 
 struct PhiNode : FactorNode
 {
-    std::vector<SsaIntLValueNode*> joinNodes;
+    PhiNode(std::set<SsaIntLValueNode*> joinNodes_) : joinNodes(joinNodes_)
+    {
+        
+    }
+    
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    std::set<SsaIntLValueNode*> joinNodes;
 };
 
 struct OneDimensionalListDecl : VarDeclNode
@@ -262,7 +271,7 @@ struct CodeBlockNode : StatementNode
         if(statements.size() == 0)
             return false;
         
-        auto lastStatement = statements[statements.size() - 1];
+        auto lastStatement = *statements.rbegin();
         
         if(dynamic_cast<GotoNode*>(lastStatement))
             return true;
@@ -342,6 +351,7 @@ struct PromptNode : StatementNode
     PromptNode(std::string str_) : str(str_) { }
     
     void accept(AstVisitor& v);
+    void acceptRecursive(AstVisitor& v);
     
     std::string str;
 };
@@ -391,6 +401,23 @@ struct VarDefSet
     bool operator!=(const VarDefSet& s) const
     {
         return !(*this == s);
+    }
+    
+    std::set<SsaIntLValueNode*> getActiveDefsForVar(IntDeclNode* var)
+    {
+        return defs[var];
+    }
+    
+    void print(const char* label)
+    {
+        printf("%s set: ", label);
+        
+        for(auto var : defs)
+        {
+            printf("%s{%d} ", var.first->name.c_str(), (int)var.second.size());
+        }
+        
+        printf("\n");
     }
     
     std::map<IntDeclNode*, std::set< SsaIntLValueNode* >> defs;
@@ -460,8 +487,8 @@ struct BasicBlockNode : CodeBlockNode
     {
         varDefIn.clear();
         
-        for(BasicBlockNode* successor : successors)
-            varDefIn.unionSet(successor->varDefIn);
+        for(BasicBlockNode* predecessor : predecessors)
+            varDefIn.unionSet(predecessor->varDefOut);
     }
     
     std::set<BasicBlockNode*> successors;
@@ -666,6 +693,13 @@ public:
         }
         
         return nullptr;
+    }
+    
+    PhiNode* addPhiNode(std::set<SsaIntLValueNode*> joinNodes)
+    {
+        auto newNode = new PhiNode(joinNodes);
+        addNode(newNode);
+        return newNode;
     }
     
     void setBody(CodeBlockNode* body_)

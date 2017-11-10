@@ -7,6 +7,9 @@
 #include "CodeGenerator.hpp"
 #include "Error.hpp"
 #include "SsaBuilder.hpp"
+#include "PhiNodeBuilder.hpp"
+
+#include <cassert>
 
 void compileSource(std::string inputFile, std::string outputFile)
 {
@@ -26,6 +29,9 @@ void compileSource(std::string inputFile, std::string outputFile)
         
         SsaBuilder ssaBuilder(ast.getBody(), ast);
         ssaBuilder.buildSsa();
+        
+        PhiNodeBuilder phiBuilder(ast.getBody(), ast);
+        phiBuilder.buildPhiNodes();
         
         CodeGenerator gen;
         gen.genCode(ast);
@@ -48,6 +54,8 @@ void compileSource(std::string inputFile, std::string outputFile)
 
 int main(int argc, char* argv[])
 {
+    printf("Here in %s\n", __FUNCTION__);
+    
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " [inputFile] [outputFile]" << std::endl;

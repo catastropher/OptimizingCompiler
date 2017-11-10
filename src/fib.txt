@@ -4,25 +4,26 @@ list[32] array
 int idx
 int bound
 begin
-let bound = 32
-rem initialize array
-for idx = 0 to bound - 1 by 1
-let array[idx] = -1
-endfor
-let array[0] = 1
-let array[1] = 1
-rem end initialize array
-let idx = 0
-prompt "The first few digits of the Fibonacci sequence are:\n"
-while (idx < bound)
-rem fibonacci calculation
-if (array[idx] != -1) then goto target
-let array[idx] = array[idx - 1] + array[idx - 2]
-label target
-rem end fibonacci calculation
-print array[idx]
-prompt " "
-let idx = idx + 1
-endwhile
-prompt "\n"
+    let bound = 32
+    rem initialize array
+    for idx = 0 to bound - 1 by 1
+    let array[idx] = -1
+    endfor
+    let array[0] = 1
+    let array[1] = 1
+    rem end initialize array
+    let idx = 0
+    prompt "The first few digits of the Fibonacci sequence are:\n"
+    while (idx < bound)
+        rem fibonacci calculation
+        if (array[idx] != -1) then goto target
+        
+        let array[idx] = array[idx - 1] + array[idx - 2]
+        label target
+        rem end fibonacci calculation
+        print array[idx]
+        prompt " "
+        let idx = idx + 1
+    endwhile
+    prompt "\n"
 end

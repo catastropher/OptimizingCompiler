@@ -49,6 +49,11 @@ struct CodeGenerator : AstVisitor
         ast.accept(*this);
     }
     
+    void visit(PhiNode* node)
+    {
+        push("{" + std::to_string(node->joinNodes.size()) + "}");
+    }
+    
     void visit(IntegerNode* node)
     {
         push(std::to_string(node->value));

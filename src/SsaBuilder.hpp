@@ -30,7 +30,14 @@ public:
             processBasicBlock(block);
         }
         
-        programBody->acceptRecursive(*this);
+        for(StatementNode* s : programBody->statements)
+        {
+            auto block = dynamic_cast<BasicBlockNode*>(s);
+            printf("Block %d\n", block->id);
+            block->varDefIn.print("\tin");
+            block->varDefOut.print("\tout");
+            printf("\n");
+        }
     }
     
 private:
@@ -71,16 +78,6 @@ private:
         
         node->leftSide = ast.addSsaIntLValueNode(intNode);
         return true;
-    }
-    
-    void visit(IntLValueNode* varNode)
-    {
-        printf("Visit assign %s\n", varNode->var->name.c_str());
-    }
-    
-    void visit(IntVarFactor* varNode)
-    {
-        printf("Visit %s\n", varNode->var->name.c_str());
     }
     
     CodeBlockNode* programBody;

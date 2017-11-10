@@ -46,6 +46,11 @@ void OneDimensionalListFactor::accept(AstVisitor& visitor)
 void OneDimensionalListFactor::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+    
+    v.enterNode(index);
+    index->acceptRecursive(v);
+    index = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index);
 }
 
 void BinaryOpNode::accept(AstVisitor& visitor)
@@ -55,8 +60,16 @@ void BinaryOpNode::accept(AstVisitor& visitor)
 
 void BinaryOpNode::acceptRecursive(AstVisitor& v)
 {
+    v.enterNode(left);
     left->acceptRecursive(v);
+    left = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(left);
+    
+    v.enterNode(right);
     right->acceptRecursive(v);
+    right = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(right);
+    
     v.visit(this);
 }
 
@@ -67,7 +80,11 @@ void UnaryOpNode::accept(AstVisitor& visitor)
 
 void UnaryOpNode::acceptRecursive(AstVisitor& v)
 {
+    v.enterNode(value);
     value->acceptRecursive(v);
+    value = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(value);
+    
     v.visit(this);
 }
 
@@ -94,8 +111,15 @@ void LetStatementNode::accept(AstVisitor& visitor)
 
 void LetStatementNode::acceptRecursive(AstVisitor& visitor)
 {
+    visitor.enterNode(leftSide);
     leftSide->acceptRecursive(visitor);
+    leftSide = dynamic_cast<LValueNode*>(visitor.lastNode());
+    visitor.exitNode(leftSide);
+    
+    visitor.enterNode(rightSide);
     rightSide->acceptRecursive(visitor);
+    rightSide = dynamic_cast<ExpressionNode*>(visitor.lastNode());
+    visitor.exitNode(rightSide);
     
     visitor.visit(this);
 }
@@ -137,8 +161,16 @@ void IfNode::accept(AstVisitor& visitor)
 
 void IfNode::acceptRecursive(AstVisitor& visitor)
 {
+    visitor.enterNode(condition);
     condition->acceptRecursive(visitor);
+    condition = dynamic_cast<ExpressionNode*>(condition);
+    visitor.exitNode(condition);
+    
+    visitor.enterNode(body);
     body->acceptRecursive(visitor);
+    body = dynamic_cast<StatementNode*>(body);
+    visitor.exitNode(body);
+    
     visitor.visit(this);
 }
 
@@ -164,18 +196,28 @@ void RemNode::accept(AstVisitor& visitor)
 
 void CodeBlockNode::acceptRecursive(AstVisitor& v)
 {
-    for(auto node : statements)
-        node->acceptRecursive(v);
-        
     v.visit(this);
+    
+    for(auto& node : statements)
+    {
+        v.enterNode(node);
+        node->acceptRecursive(v);
+        node = dynamic_cast<StatementNode*>(v.lastNode());
+        v.exitNode(node);
+    }
 }
 
 void BasicBlockNode::acceptRecursive(AstVisitor& v)
 {
-    for(auto node : statements)
-        node->acceptRecursive(v);
-        
     v.visit(this);
+    
+    for(auto& node : statements)
+    {
+        v.enterNode(node);
+        node->acceptRecursive(v);
+        node = dynamic_cast<StatementNode*>(v.lastNode());
+        v.exitNode(node);
+    }
 }
 
 void IntLValueNode::acceptRecursive(AstVisitor& visitor)
@@ -186,8 +228,26 @@ void IntLValueNode::acceptRecursive(AstVisitor& visitor)
 void OneDimensionalListLValueNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+    
+    v.enterNode(index);
+    index->acceptRecursive(v);
+    index = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index);
 }
 
+void PromptNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
 
+void PhiNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
+
+void PhiNode::accept(AstVisitor& v)
+{
+    v.visit(this);
+}
 
 
