@@ -32,6 +32,31 @@ public:
         }
     }
     
+    void visit(LetStatementNode* node)
+    {
+        SsaIntLValueNode* lValue = dynamic_cast<SsaIntLValueNode*>(node->leftSide);
+        if(!lValue)
+            return;
+        
+        if(lValue->hasConstantValue)
+            return;
+        
+        if(IntegerNode* intNode = dynamic_cast<IntegerNode*>(node->rightSide))
+        {
+            lValue->setConstant(intNode->value);
+            success = true;
+        }
+    }
+    
+    void visit(SsaIntVarFactor* node)
+    {
+        if(node->ssaLValue->hasConstantValue)
+        {
+            replaceNode(ast.newIntegerNode(node->ssaLValue->value));
+            success = true;
+        }
+    }
+    
 private:
     CodeBlockNode* programBody;
     Ast& ast;

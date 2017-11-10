@@ -203,9 +203,32 @@ struct IntLValueNode : LValueNode
 
 struct SsaIntLValueNode : IntLValueNode
 {
-    SsaIntLValueNode(IntDeclNode* var_) : IntLValueNode(var_), refCount(0) { }
+    SsaIntLValueNode(IntDeclNode* var_)
+        : IntLValueNode(var_),
+        refCount(0),
+        hasConstantValue(false),
+        value(0)
+        { }
+        
+    void setConstant(int val)
+    {
+        hasConstantValue = true;
+        value = val;
+    }
     
     int refCount;
+    bool hasConstantValue;
+    int value;
+};
+
+struct SsaIntVarFactor : IntVarFactor
+{
+    SsaIntVarFactor(SsaIntLValueNode* node) : IntVarFactor(node->var), ssaLValue(node) { }
+    
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    SsaIntLValueNode* ssaLValue;
 };
 
 struct OneDimensionalListLValueNode : LValueNode
@@ -684,6 +707,13 @@ public:
         return newNode;
     }
     
+    SsaIntVarFactor* addSsaIntVarFactorNode(SsaIntLValueNode* node)
+    {
+        auto newNode = new SsaIntVarFactor(node);
+        addNode(newNode);
+        return newNode;
+    }
+    
     VarDeclNode* getVarByName(std::string name)
     {
         for(VarDeclNode* var : vars)
@@ -738,6 +768,12 @@ public:
         
         for(VarDeclNode* node : vars)
             delete node;
+    }
+    
+    IntDeclNode* generateTempVar()
+    {
+        static int nextId = 0;
+        return addIntegerVar("temp" + std::to_string(nextId++) + "_", -1, -1);
     }
     
 private:

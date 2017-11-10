@@ -250,4 +250,16 @@ void PhiNode::accept(AstVisitor& v)
     v.visit(this);
 }
 
+void SsaIntVarFactor::accept(AstVisitor& v)
+{
+    v.visit(this);
+}
+
+void SsaIntVarFactor::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
+
+
+
 
