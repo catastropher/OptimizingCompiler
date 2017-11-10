@@ -6,10 +6,7 @@
 #include "Parser.hpp"
 #include "CodeGenerator.hpp"
 #include "Error.hpp"
-#include "SsaBuilder.hpp"
-#include "PhiNodeBuilder.hpp"
-
-#include <cassert>
+#include "Optimizer.hpp"
 
 void compileSource(std::string inputFile, std::string outputFile)
 {
@@ -27,11 +24,8 @@ void compileSource(std::string inputFile, std::string outputFile)
         
         ast.splitIntoBasicBlocks();
         
-        SsaBuilder ssaBuilder(ast.getBody(), ast);
-        ssaBuilder.buildSsa();
-        
-        PhiNodeBuilder phiBuilder(ast.getBody(), ast);
-        phiBuilder.buildPhiNodes();
+        Optimizer optimizer(ast.getBody(), ast);
+        optimizer.optimize();
         
         CodeGenerator gen;
         gen.genCode(ast);

@@ -7,30 +7,30 @@
 
 struct AstVisitor
 {
-    virtual void visit(StatementNode*) { }
-    virtual void visit(ExpressionNode*) { }
-    virtual void visit(IntegerNode*) { }
-    virtual void visit(IntVarFactor*) { }
-    virtual void visit(OneDimensionalListFactor*) { }
-    virtual void visit(BinaryOpNode*) {  }
-    virtual void visit(UnaryOpNode*) { }
-    virtual void visit(IntLValueNode*) { }
-    virtual void visit(OneDimensionalListLValueNode*) { }
-    virtual void visit(LetStatementNode*) { }
-    virtual void visit(CodeBlockNode*) { }
-    virtual void visit(BasicBlockNode*) { }
-    virtual void visit(ForLoopNode*) { }
-    virtual void visit(LabelNode*) { }
-    virtual void visit(GotoNode*) { }
-    virtual void visit(WhileLoopNode*) { }
-    virtual void visit(IfNode*) { }
-    virtual void visit(PrintNode*) { }
-    virtual void visit(PromptNode*) { }
-    virtual void visit(InputNode*) { }
-    virtual void visit(EndNode*) { }
-    virtual void visit(RemNode*) { }
-    virtual void visit(FactorNode*) { }
-    virtual void visit(PhiNode*) { }
+    virtual void visit(StatementNode* node) { }
+    virtual void visit(ExpressionNode* node) { }
+    virtual void visit(IntegerNode* node) { visit((ExpressionNode*)node); }
+    virtual void visit(IntVarFactor* node) { visit((ExpressionNode*)node); }
+    virtual void visit(OneDimensionalListFactor* node) { }
+    virtual void visit(BinaryOpNode* node) { visit((ExpressionNode*)node); }
+    virtual void visit(UnaryOpNode* node) { visit((ExpressionNode*)node); }
+    virtual void visit(IntLValueNode* node) { }
+    virtual void visit(OneDimensionalListLValueNode* node) { }
+    virtual void visit(LetStatementNode* node) { }
+    virtual void visit(CodeBlockNode* node) { }
+    virtual void visit(BasicBlockNode* node) { }
+    virtual void visit(ForLoopNode* node) { }
+    virtual void visit(LabelNode* node) { }
+    virtual void visit(GotoNode* node) { }
+    virtual void visit(WhileLoopNode* node) { }
+    virtual void visit(IfNode* node) { }
+    virtual void visit(PrintNode* node) { }
+    virtual void visit(PromptNode* node) { }
+    virtual void visit(InputNode* node) { }
+    virtual void visit(EndNode* node) { }
+    virtual void visit(RemNode* node) { }
+    virtual void visit(FactorNode* node) { }
+    virtual void visit(PhiNode* node) { }
     
     virtual void visitVars(std::vector<VarDeclNode*>&) { }
     
