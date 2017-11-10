@@ -15,6 +15,7 @@ public:
     
     bool eliminateDeadCode()
     {
+        success = false;
         liveStatements.clear();
         
         IoStatementFinder finder(programBody);
@@ -31,7 +32,7 @@ public:
         }
         
         StatementKiller killer(programBody, liveStatements);
-        return killer.killDeadStatements();
+        return killer.killDeadStatements() || success;
     }
     
     void scheduleNode(StatementNode* node)
@@ -59,9 +60,22 @@ public:
             scheduleNode(joinNode->definitionNode);
     }
     
+    void visit(IfNode* node)
+    {
+        if(auto intNode = dynamic_cast<IntegerNode*>(node->condition))
+        {
+            if(intNode->value == 0)
+            {
+                node->markAsDead();
+                success = true;
+            }
+        }
+    }
+    
 private:
     CodeBlockNode* programBody;
     std::set<StatementNode*> liveStatements;
     std::queue<StatementNode*> workQueue;
+    bool success;
 };
 

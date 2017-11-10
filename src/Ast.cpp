@@ -165,12 +165,12 @@ void IfNode::acceptRecursive(AstVisitor& visitor)
 {
     visitor.enterNode(condition);
     condition->acceptRecursive(visitor);
-    condition = dynamic_cast<ExpressionNode*>(condition);
+    condition = dynamic_cast<ExpressionNode*>(visitor.lastNode());
     visitor.exitNode(condition);
     
     visitor.enterNode(body);
     body->acceptRecursive(visitor);
-    body = dynamic_cast<StatementNode*>(body);
+    body = dynamic_cast<StatementNode*>(visitor.lastNode());
     visitor.exitNode(body);
     
     visitor.visit(this);

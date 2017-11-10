@@ -58,6 +58,18 @@ public:
         }
     }
     
+    void visit(IfNode* node)
+    {
+        if(auto intNode = dynamic_cast<IntegerNode*>(node->condition))
+        {
+            if(intNode->value != 0)
+            {
+                replaceNode(node->body);
+                success = true;
+            }
+        }
+    }
+    
 private:
     CodeBlockNode* programBody;
     Ast& ast;

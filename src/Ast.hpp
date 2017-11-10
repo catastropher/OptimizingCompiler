@@ -85,6 +85,13 @@ struct BinaryOpNode : ExpressionNode
             case TOK_MUL: return a * b;
             case TOK_DIV: return a / b;
             case TOK_MOD: return a % b;
+            case TOK_EQ:  return a == b;
+            case TOK_NE:  return a != b;
+            case TOK_LT:  return a < b;
+            case TOK_GT:  return a > b;
+            case TOK_GE:  return a >= b;
+            case TOK_LE:  return a <= b;
+            
             default: break;
         }
         
