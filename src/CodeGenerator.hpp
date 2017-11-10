@@ -134,7 +134,10 @@ struct CodeGenerator : AstVisitor
         }
         
         for(StatementNode* s : node->statements)
-            s->accept(*this);
+        {
+            if(!s->markedAsDead)
+                s->accept(*this);
+        }
         
         if(node->needCurlyBraces)
         {

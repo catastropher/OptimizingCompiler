@@ -43,6 +43,7 @@ public:
         
         if(IntegerNode* intNode = dynamic_cast<IntegerNode*>(node->rightSide))
         {
+            //node->markAsDead();
             lValue->setConstant(intNode->value);
             success = true;
         }

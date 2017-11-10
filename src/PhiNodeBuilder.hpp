@@ -28,7 +28,7 @@ private:
         {
             if(var.second.size() > 1)
             {
-                phiNodes.push_back(createTempJoin(var.first));
+                phiNodes.push_back(createTempJoin(var.first, node));
             }
         }
         
@@ -59,13 +59,18 @@ private:
         replaceNode(ast.addSsaIntVarFactorNode(*defs.begin()));
     }
     
-    LetStatementNode* createTempJoin(IntDeclNode* var)
+    LetStatementNode* createTempJoin(IntDeclNode* var, BasicBlockNode* basicBlock)
     {
-        return ast.addLetStatementNode
+        auto lValue = ast.addSsaIntLValueNode(ast.addIntLValue(var), basicBlock, nullptr);
+        
+        auto letStatement = ast.addLetStatementNode
         (
-            ast.addSsaIntLValueNode(ast.addIntLValue(var)),
+            lValue,
             ast.addPhiNode(activeVars.getActiveDefsForVar(var))
         );
+        
+        lValue->definitionNode = letStatement;
+        return letStatement;
     }
     
     CodeBlockNode* programBody;

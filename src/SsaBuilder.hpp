@@ -52,7 +52,7 @@ private:
         {
             if(LetStatementNode* node = dynamic_cast<LetStatementNode*>(s))
             {
-                if(transformLetStatementToSsa(node))
+                if(transformLetStatementToSsa(node, basicBlock))
                 {
                     basicBlock->varDefOut.replaceDefinition(dynamic_cast<SsaIntLValueNode*>(node->leftSide));
                 }
@@ -66,7 +66,7 @@ private:
         }
     }
     
-    bool transformLetStatementToSsa(LetStatementNode* node)
+    bool transformLetStatementToSsa(LetStatementNode* node, BasicBlockNode* currentBlock)
     {
         bool alreadyTransformed = dynamic_cast<SsaIntLValueNode*>(node->leftSide);
         if(alreadyTransformed)
@@ -76,7 +76,7 @@ private:
         if(!intNode)
             return false;
         
-        node->leftSide = ast.addSsaIntLValueNode(intNode);
+        node->leftSide = ast.addSsaIntLValueNode(intNode, currentBlock, node);
         return true;
     }
     

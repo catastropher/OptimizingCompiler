@@ -174,6 +174,14 @@ struct OneDimensionalListDecl : VarDeclNode
 
 struct StatementNode : AstNode
 {
+    StatementNode() : markedAsDead(false) { }
+    
+    void markAsDead()
+    {
+        markedAsDead = true;
+    }
+    
+    bool markedAsDead;
 };
 
 struct EndNode : StatementNode
@@ -201,10 +209,15 @@ struct IntLValueNode : LValueNode
     IntDeclNode* var;
 };
 
+struct BasicBlockNode;
+struct LetStatementNode;
+
 struct SsaIntLValueNode : IntLValueNode
 {
-    SsaIntLValueNode(IntDeclNode* var_)
+    SsaIntLValueNode(IntDeclNode* var_, BasicBlockNode* basicBlock_, LetStatementNode* definitionNode_)
         : IntLValueNode(var_),
+        basicBlock(basicBlock_),
+        definitionNode(definitionNode_),
         refCount(0),
         hasConstantValue(false),
         value(0)
@@ -216,6 +229,8 @@ struct SsaIntLValueNode : IntLValueNode
         value = val;
     }
     
+    BasicBlockNode* basicBlock;
+    LetStatementNode* definitionNode;
     int refCount;
     bool hasConstantValue;
     int value;
@@ -699,9 +714,9 @@ public:
         return newNode;
     }
     
-    SsaIntLValueNode* addSsaIntLValueNode(IntLValueNode* node)
+    SsaIntLValueNode* addSsaIntLValueNode(IntLValueNode* node, BasicBlockNode* basicBlock, LetStatementNode* definitionNode)
     {
-        auto newNode = new SsaIntLValueNode(node->var);
+        auto newNode = new SsaIntLValueNode(node->var, basicBlock, definitionNode);
         node->var->addSsaDefinition(newNode);
         addNode(newNode);
         return newNode;
