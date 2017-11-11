@@ -15,8 +15,8 @@ public:
         success = false;
         programBody->acceptRecursive(*this);
         
-        JoinNodeRemover remover(programBody, nodeToReplace);
-        success |= remover.removeFromJoinNodes();
+        //JoinNodeRemover remover(programBody, nodeToReplace);
+        //success |= remover.removeFromJoinNodes();
         
         return success;
     }
