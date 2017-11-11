@@ -515,7 +515,10 @@ struct BasicBlockNode : CodeBlockNode
         std::vector<int> ids;
         
         for(auto block : successors)
-            ids.push_back(block->id);
+        {
+            if(!block->markedAsDead)
+                ids.push_back(block->id);
+        }
         
         std::sort(ids.begin(), ids.end());
         
@@ -527,7 +530,10 @@ struct BasicBlockNode : CodeBlockNode
         std::vector<int> ids;
         
         for(auto block : predecessors)
-            ids.push_back(block->id);
+        {
+            if(!block->markedAsDead)
+                ids.push_back(block->id);
+        }
         
         std::sort(ids.begin(), ids.end());
         

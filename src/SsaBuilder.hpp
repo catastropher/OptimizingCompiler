@@ -29,15 +29,6 @@ public:
             workQueue.pop();
             processBasicBlock(block);
         }
-        
-        for(StatementNode* s : programBody->statements)
-        {
-            auto block = dynamic_cast<BasicBlockNode*>(s);
-            printf("Block %d\n", block->id);
-            block->varDefIn.print("\tin");
-            block->varDefOut.print("\tout");
-            printf("\n");
-        }
     }
     
 private:
