@@ -6,6 +6,7 @@
 #include "ExpressionFolder.hpp"
 #include "DeadCodeEliminator.hpp"
 #include "CopyPropagator.hpp"
+#include "RedundantVariableRemover.hpp"
 
 class Optimizer
 {
@@ -15,7 +16,8 @@ public:
         ast(ast_),
         expressionFolder(programBody, ast),
         eliminator(programBody),
-        copyPropagator(programBody, ast)
+        copyPropagator(programBody, ast),
+        varRemover(programBody)
         { }
         
     void optimize()
@@ -27,6 +29,8 @@ public:
         phiNodeBuilder.buildPhiNodes();
         
         while(optimizeIteration()) ;
+        
+        ast.eliminateUnusedVars();
     }
     
 private:
@@ -37,6 +41,7 @@ private:
         success |= expressionFolder.foldExpressions();
         success |= eliminator.eliminateDeadCode();
         success |= copyPropagator.propagateCopies();
+        success |= varRemover.removeRedundantVariables();
         
         return success;
     }
@@ -47,4 +52,5 @@ private:
     ExpressionFolder expressionFolder;
     DeadCodeEliminator eliminator;
     CopyPropagator copyPropagator;
+    RedundantVariableRemover varRemover;
 };

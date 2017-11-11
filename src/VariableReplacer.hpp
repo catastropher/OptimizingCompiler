@@ -7,7 +7,7 @@
 class VariableReplacer : AstVisitor
 {
 public:
-    VariableReplacer(CodeBlockNode* programBody_, SsaIntLValueNode* nodeToReplace_, SsaIntVarFactor* replacement_)
+    VariableReplacer(CodeBlockNode* programBody_, SsaIntLValueNode* nodeToReplace_, ExpressionNode* replacement_)
         : programBody(programBody_), nodeToReplace(nodeToReplace_), replacement(replacement_) { }    
     
     bool replaceVars()
@@ -33,7 +33,7 @@ private:
     
     CodeBlockNode* programBody;
     SsaIntLValueNode* nodeToReplace;
-    SsaIntVarFactor* replacement;
+    ExpressionNode* replacement;
     bool success;
 };
 

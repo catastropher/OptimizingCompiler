@@ -1,6 +1,7 @@
 #include "Ast.hpp"
 #include "AstVisitor.hpp"
 #include "BasicBlockBuilder.hpp"
+#include "VariableUsageCounter.hpp"
 
 void Ast::accept(AstVisitor& v)
 {
@@ -297,5 +298,29 @@ void SsaIntVarFactor::acceptRecursive(AstVisitor& v)
 void SsaIntLValueNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
+}
+
+void Ast::eliminateUnusedVars()
+{
+    VariableUsageCounter counter(body);
+    auto count = counter.countVarUses();
+    std::map<IntDeclNode*, int> intVarCounts;
+    
+    for(auto var : count)
+    {
+        intVarCounts[var.first->var] += var.second;
+    }
+    
+    for(auto var : vars)
+    {
+        if(auto intVar = dynamic_cast<IntDeclNode*>(var))
+        {
+            if(intVarCounts[intVar] == 0)
+            {
+                printf("Eliminated variable %s\n", intVar->name.c_str());
+                intVar->eliminated = true;
+            }
+        }
+    }
 }
 

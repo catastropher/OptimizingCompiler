@@ -16,6 +16,9 @@ struct CodeGenerator : AstVisitor
     {
         for(auto var : vars)
         {
+            if(var->eliminated)
+                continue;
+            
             if(auto intVar = dynamic_cast<IntDeclNode*>(var))
             {
                 addLine("int " + intVar->name + ";");

@@ -131,12 +131,13 @@ struct UnaryOpNode : ExpressionNode
 struct VarDeclNode : AstNode
 {
     VarDeclNode(std::string name_, int line_, int col_)
-        : name(name_), line(line_), col(col_), definitionCount(0) { }
+        : name(name_), line(line_), col(col_), definitionCount(0), eliminated(false) { }
     
     std::string name;
     int line;
     int col;
     int definitionCount;
+    bool eliminated;
 };
 
 struct SsaIntLValueNode;
@@ -804,6 +805,8 @@ public:
         static int nextId = 0;
         return addIntegerVar("temp" + std::to_string(nextId++) + "_", -1, -1);
     }
+    
+    void eliminateUnusedVars();
     
 private:
     void addNode(AstNode* node)
