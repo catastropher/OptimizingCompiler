@@ -12,6 +12,7 @@ public:
     
     std::set<StatementNode*> findIoStatements()
     {
+        currentStatement = nullptr;
         ioStatements.clear();
         programBody->acceptRecursive(*this);
         return ioStatements;
@@ -47,8 +48,26 @@ public:
         ioStatements.insert(node);
     }
     
+    void visit(StatementNode* node)
+    {
+        currentStatement = node;
+    }
+    
+    void visit(OneDimensionalListFactor* node)
+    {
+        if(currentStatement)
+            ioStatements.insert(currentStatement);
+    }
+    
+    void visit(OneDimensionalListLValueNode* node)
+    {
+        if(currentStatement)
+            ioStatements.insert(currentStatement);
+    }
+    
 private:
     CodeBlockNode* programBody;
     std::set<StatementNode*> ioStatements;
+    StatementNode* currentStatement;
 };
 
