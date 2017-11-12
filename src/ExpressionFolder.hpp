@@ -5,7 +5,12 @@
 class ExpressionFolder : AstVisitor
 {
 public:
-    ExpressionFolder(CodeBlockNode* programBody_, Ast& ast_) : programBody(programBody_), ast(ast_) { }
+    ExpressionFolder(CodeBlockNode* programBody_, Ast& ast_)
+        : programBody(programBody_),
+        ast(ast_),
+        totalFolded(0),
+        totalConstantsPropogated(0),
+        totalAlwaysTrueIfStatements(0) { }
     
     bool foldExpressions()
     {
@@ -14,6 +19,14 @@ public:
         return success;
     }
     
+    void printStats()
+    {
+        printf("Total expressions folded: %d\n", totalFolded);
+        printf("Total constants propogated: %d\n", totalConstantsPropogated);
+        printf("Total always true if's replaced: %d\n", totalAlwaysTrueIfStatements);
+    }
+    
+private:
     void visit(ExpressionNode* node)
     {
         bool alreadySimplified = dynamic_cast<IntegerNode*>(node);
@@ -25,6 +38,7 @@ public:
             int value = node->tryEvaluate();
             replaceNode(ast.newIntegerNode(value));
             success = true;
+            ++totalFolded;
         }
         catch(...)
         {
@@ -66,12 +80,15 @@ public:
             {
                 replaceNode(node->body);
                 success = true;
+                ++totalAlwaysTrueIfStatements;
             }
         }
     }
     
-private:
     CodeBlockNode* programBody;
     Ast& ast;
     bool success;
+    int totalFolded;
+    int totalConstantsPropogated;
+    int totalAlwaysTrueIfStatements;
 };

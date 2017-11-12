@@ -28,9 +28,15 @@ public:
         PhiNodeBuilder phiNodeBuilder(programBody, ast);
         phiNodeBuilder.buildPhiNodes();
         
-        while(optimizeIteration()) ;
+        int iterationCount = 1;
+        while(optimizeIteration())
+            ++iterationCount;
+        
+        printf("Total optimization passes: %d\n", iterationCount);
         
         ast.eliminateUnusedVars();
+        
+        expressionFolder.printStats();
     }
     
 private:
