@@ -48,8 +48,6 @@ private:
     
     void visit(LetStatementNode* node)
     {
-        return;
-        
         SsaIntLValueNode* lValue = dynamic_cast<SsaIntLValueNode*>(node->leftSide);
         if(!lValue)
             return;
@@ -85,6 +83,23 @@ private:
                 ++totalAlwaysTrueIfStatements;
             }
         }
+    }
+    
+    void visit(PhiNode* node)
+    {
+        int value = (*node->joinNodes.begin())->value;
+        
+        for(auto joinNode : node->joinNodes)
+        {
+            if(!joinNode->hasConstantValue)
+                return;
+            
+            if(joinNode->value != value)
+                return;
+        }
+        
+        // All join nodes are constant and have the same value, replace with the value
+        replaceNode(ast.newIntegerNode(value));
     }
     
     CodeBlockNode* programBody;

@@ -44,9 +44,9 @@ private:
     {
         bool success = false;
         
-        //success |= expressionFolder.foldExpressions();
-        //success |= eliminator.eliminateDeadCode();
-        //success |= copyPropagator.propagateCopies();
+        success |= expressionFolder.foldExpressions();
+        success |= eliminator.eliminateDeadCode();
+        success |= copyPropagator.propagateCopies();
         success |= varRemover.removeRedundantVariables();
         
         return success;

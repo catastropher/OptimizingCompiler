@@ -242,8 +242,7 @@ struct CodeGenerator : AstVisitor
     
     void visit(InputNode* node)
     {
-        node->var->accept(*this);
-        addLine("scanf(\"%d\", &" + pop() + ");");
+        
     }
     
     void visit(InputIntNode* node)
