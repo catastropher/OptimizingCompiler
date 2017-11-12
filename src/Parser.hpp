@@ -73,7 +73,7 @@ private:
     
     PrintNode* parsePrint();
     PromptNode* parsePrompt();
-    InputNode* parseInput();
+    StatementNode* parseInput();
     
     ExpressionNode* parseCondition();
     

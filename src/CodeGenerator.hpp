@@ -32,6 +32,12 @@ struct CodeGenerator : AstVisitor
         addLine("");
     }
     
+    void addReadIntPrototype()
+    {
+        addLine("int readInt();");
+        addLine("");
+    }
+    
     void genCode(Ast& ast)
     {
         if(ast.getTitle() == "")
@@ -48,8 +54,24 @@ struct CodeGenerator : AstVisitor
         addLine("");
         ast.accepVars(*this);
         
+        addReadIntPrototype();
+        
         addLine("int main()");
         ast.accept(*this);
+        
+        if(needsReadInt)
+            addReadIntDef();
+    }
+    
+    void addReadIntDef()
+    {
+        addLine("int readInt()");
+        addLine("{");
+        addLine("    int val;");
+        addLine("    scanf(\"%d\", &val);");
+        addLine("    return val;");
+        addLine("}");
+        addLine("");
     }
     
     void visit(PhiNode* node)
@@ -224,6 +246,12 @@ struct CodeGenerator : AstVisitor
         addLine("scanf(\"%d\", &" + pop() + ");");
     }
     
+    void visit(InputIntNode* node)
+    {
+        push("readInt()");
+        needsReadInt = true;
+    }
+    
     void visit(PromptNode* node)
     {
         addLine("printf(\"%s\", " + node->str + ");");
@@ -279,5 +307,6 @@ struct CodeGenerator : AstVisitor
     int currentIndent;
     
     std::stack<std::string> expStack;
+    bool needsReadInt;
 };
 

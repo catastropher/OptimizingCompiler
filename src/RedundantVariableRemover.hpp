@@ -17,7 +17,9 @@ public:
         
         for(auto var : count)
         {
-            if(count[var.first] == 1)
+            bool inputNode = dynamic_cast<InputIntNode*>(var.first->definitionNode->rightSide);
+            
+            if(count[var.first] == 1 && !inputNode)
             {
                 VariableReplacer replacer(programBody, var.first, var.first->definitionNode->rightSide);
                 success |= replacer.replaceVars();

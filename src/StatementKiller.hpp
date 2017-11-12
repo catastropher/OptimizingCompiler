@@ -49,6 +49,10 @@ public:
         if(node->markedAsDead)
             return;
         
+        // Special case: don't kill input nodes
+        if(dynamic_cast<InputIntNode*>(node->rightSide) && killedStatements.count(node) == 0)
+            return;
+        
         if(liveStatements.count(node) == 0 || killedStatements.count(node) != 0)
         {
             if(auto lValue = dynamic_cast<SsaIntLValueNode*>(node->leftSide))

@@ -5,6 +5,8 @@
 #include "Ast.hpp"
 #include "AstVisitor.hpp"
 
+#include <typeinfo>
+
 class IoStatementFinder : AstVisitor
 {
 public:
@@ -18,6 +20,7 @@ public:
         return ioStatements;
     }
     
+private:
     void visit(PromptNode* node)
     {
         ioStatements.insert(node);
@@ -55,17 +58,27 @@ public:
     
     void visit(OneDimensionalListFactor* node)
     {
-        if(currentStatement)
-            ioStatements.insert(currentStatement);
+        forceAddCurrentStatement();
     }
     
     void visit(OneDimensionalListLValueNode* node)
     {
-        if(currentStatement)
-            ioStatements.insert(currentStatement);
+        forceAddCurrentStatement();
+    }
+   
+    void visit(InputIntNode* node)
+    {
+        forceAddCurrentStatement();
     }
     
-private:
+    void forceAddCurrentStatement()
+    {
+        if(!currentStatement)
+            return;
+        
+        ioStatements.insert(currentStatement);
+    }
+    
     CodeBlockNode* programBody;
     std::set<StatementNode*> ioStatements;
     StatementNode* currentStatement;

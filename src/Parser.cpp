@@ -459,11 +459,22 @@ PrintNode* Parser::parsePrint()
     return ast.addPrintNode(expression);
 }
 
-InputNode* Parser::parseInput()
+StatementNode* Parser::parseInput()
 {
     nextToken();
     LValueNode* dest = parseLValue();
-    return ast.addInputNode(dest);
+    
+    // We no longer create input nodes because this messed up static analysis
+    // (the analyzer didn't understand that input nodes changed values of vars).
+    // Instead, we treat them as assignments
+    
+    auto letStatement = ast.addLetStatementNode(dest, ast.addInputIntNode());
+    CodeBlockNode* codeBlock = ast.addCodeBlockNode();
+    
+    codeBlock->addStatement(ast.addInputNode(dest));
+    codeBlock->addStatement(letStatement);
+    
+    return codeBlock;
 }
 
 CodeBlockNode* Parser::transformForLoop(ForLoopNode* node)

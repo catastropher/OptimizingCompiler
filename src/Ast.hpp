@@ -756,6 +756,13 @@ public:
         return newNode;
     }
     
+    InputIntNode* addInputIntNode()
+    {
+        auto newNode = new InputIntNode;
+        addNode(newNode);
+        return newNode;
+    }
+    
     VarDeclNode* getVarByName(std::string name)
     {
         for(VarDeclNode* var : vars)
