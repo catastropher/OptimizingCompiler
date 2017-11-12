@@ -366,3 +366,13 @@ void Ast::defaultInitializeVars()
     }
 }
 
+FactorNode* IntLValueNode::getFactorNode(Ast& ast)
+{
+    return ast.addIntVarFactor(var);
+}
+
+FactorNode* OneDimensionalListLValueNode::getFactorNode(Ast& ast)
+{
+    return ast.addOneDimensionalListFactor(var, index);
+}
+

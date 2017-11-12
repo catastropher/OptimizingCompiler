@@ -203,9 +203,11 @@ struct EndNode : StatementNode
     void accept(AstVisitor& v);
 };
 
+class Ast;
+
 struct LValueNode : AstNode
 {
-    virtual FactorNode* getFactorNode() = 0;
+    virtual FactorNode* getFactorNode(Ast& ast) = 0;
 };
 
 struct IntLValueNode : LValueNode
@@ -215,10 +217,7 @@ struct IntLValueNode : LValueNode
     void accept(AstVisitor& v);
     virtual void acceptRecursive(AstVisitor& v);
     
-    FactorNode* getFactorNode()
-    {
-        return new IntVarFactor(var);
-    }
+    FactorNode* getFactorNode(Ast& ast);
     
     IntDeclNode* var;
 };
@@ -270,10 +269,7 @@ struct OneDimensionalListLValueNode : LValueNode
     void accept(AstVisitor& v);
     virtual void acceptRecursive(AstVisitor& v);
     
-    FactorNode* getFactorNode()
-    {
-        return new OneDimensionalListFactor(var, index);
-    }
+    FactorNode* getFactorNode(Ast& ast);
     
     OneDimensionalListDecl* var;
     ExpressionNode* index;

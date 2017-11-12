@@ -498,7 +498,7 @@ CodeBlockNode* Parser::transformForLoop(ForLoopNode* node)
             node->var,
             ast.newBinaryOpNode
             (
-                node->var->getFactorNode(),
+                node->var->getFactorNode(ast),
                 TOK_ADD,
                 node->increment
             )
@@ -511,7 +511,7 @@ CodeBlockNode* Parser::transformForLoop(ForLoopNode* node)
         (
             ast.newBinaryOpNode
             (
-                node->var->getFactorNode(),
+                node->var->getFactorNode(ast),
                 TOK_LE,
                 node->upperBound
             ),
