@@ -33,6 +33,7 @@ struct AstVisitor
     virtual void visit(PhiNode* node) { }
     virtual void visit(SsaIntLValueNode* node) { } 
     virtual void visit(SsaIntVarFactor* node) { visit((IntVarFactor*)node); }
+    virtual void visit(InputIntNode* node) { visit((ExpressionNode*)node); }
     
     virtual void visitVars(std::vector<VarDeclNode*>&) { }
     

@@ -300,6 +300,16 @@ void SsaIntLValueNode::acceptRecursive(AstVisitor& v)
     v.visit(this);
 }
 
+void InputIntNode::accept(AstVisitor& v)
+{
+    v.visit(this);
+}
+
+void InputIntNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
+
 void Ast::eliminateUnusedVars()
 {
     VariableUsageCounter counter(body);

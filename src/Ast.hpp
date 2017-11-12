@@ -54,6 +54,12 @@ struct IntVarFactor : FactorNode
     IntDeclNode* var;
 };
 
+struct InputIntNode : FactorNode
+{
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+};
+
 struct OneDimensionalListDecl;
 
 struct OneDimensionalListFactor : FactorNode
