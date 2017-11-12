@@ -1,6 +1,9 @@
 var
     list[10] array
+    int x
+    int y
 begin
-    let array[0] = 10
-    print array[0]
+    input x
+    let y = x
+    print y
 end
