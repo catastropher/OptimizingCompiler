@@ -343,3 +343,26 @@ void Ast::eliminateUnusedVars()
     }
 }
 
+void Ast::defaultInitializeVars()
+{
+    std::vector<StatementNode*> varInit;
+    
+    for(auto var : vars)
+    {
+        if(auto intVar = dynamic_cast<IntDeclNode*>(var))
+        {
+            varInit.push_back
+            (
+                addLetStatementNode(addIntLValue(intVar), newIntegerNode(0))
+            );
+        }
+    }
+    
+    if(varInit.size() != 0)
+    {
+        varInit.insert(varInit.begin(), addRemNode("--- Begin default variable initializations ---"));
+        varInit.push_back(addRemNode("--- End default variable initializations ---"));
+        body->statements.insert(body->statements.begin(), varInit.begin(), varInit.end());
+    }
+}
+

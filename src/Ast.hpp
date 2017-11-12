@@ -826,6 +826,7 @@ public:
     }
     
     void eliminateUnusedVars();
+    void defaultInitializeVars();
     
 private:
     void addNode(AstNode* node)

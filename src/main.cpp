@@ -22,6 +22,7 @@ void compileSource(std::string inputFile, std::string outputFile)
         Parser parser(tokens);
         Ast& ast = parser.parse();
         
+        ast.defaultInitializeVars();
         ast.splitIntoBasicBlocks();
         
         Optimizer optimizer(ast.getBody(), ast);
