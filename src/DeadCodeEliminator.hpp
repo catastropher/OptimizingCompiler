@@ -23,8 +23,6 @@ public:
         IoStatementFinder finder(programBody);
         liveStatements = finder.findIoStatements();
         
-        printf("Live statements: %d\n", (int)liveStatements.size());
-        
         for(auto s : liveStatements)
             workQueue.push(s);
         
@@ -36,6 +34,8 @@ public:
         }
         
         eliminateDeadBasicBlocks();
+        
+        printf("Live statements: %d\n", (int)liveStatements.size());
         
         StatementKiller killer(programBody, liveStatements, killedStatements);
         return killer.killDeadStatements() || success;

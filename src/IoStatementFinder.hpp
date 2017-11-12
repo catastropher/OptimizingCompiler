@@ -10,7 +10,8 @@
 class IoStatementFinder : AstVisitor
 {
 public:
-    IoStatementFinder(CodeBlockNode* programBody_) : programBody(programBody_) { }
+    IoStatementFinder(CodeBlockNode* programBody_) : programBody(programBody_)
+        { visitLetBefore = true; }
     
     std::set<StatementNode*> findIoStatements()
     {

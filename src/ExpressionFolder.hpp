@@ -48,6 +48,8 @@ private:
     
     void visit(LetStatementNode* node)
     {
+        return;
+        
         SsaIntLValueNode* lValue = dynamic_cast<SsaIntLValueNode*>(node->leftSide);
         if(!lValue)
             return;

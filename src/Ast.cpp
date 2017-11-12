@@ -60,9 +60,7 @@ void BinaryOpNode::accept(AstVisitor& visitor)
 }
 
 void BinaryOpNode::acceptRecursive(AstVisitor& v)
-{
-    v.visit(this);
-    
+{    
     v.enterNode(left);
     left->acceptRecursive(v);
     left = dynamic_cast<ExpressionNode*>(v.lastNode());
@@ -72,6 +70,8 @@ void BinaryOpNode::acceptRecursive(AstVisitor& v)
     right->acceptRecursive(v);
     right = dynamic_cast<ExpressionNode*>(v.lastNode());
     v.exitNode(right);
+    
+    v.visit(this);
 }
 
 void UnaryOpNode::accept(AstVisitor& visitor)
@@ -80,13 +80,13 @@ void UnaryOpNode::accept(AstVisitor& visitor)
 }
 
 void UnaryOpNode::acceptRecursive(AstVisitor& v)
-{
-    v.visit(this);
-    
+{    
     v.enterNode(value);
     value->acceptRecursive(v);
     value = dynamic_cast<ExpressionNode*>(v.lastNode());
     v.exitNode(value);
+    
+    v.visit(this);
 }
 
 void IntLValueNode::accept(AstVisitor& visitor)
@@ -112,8 +112,11 @@ void LetStatementNode::accept(AstVisitor& visitor)
 
 void LetStatementNode::acceptRecursive(AstVisitor& visitor)
 {
-    visitor.visit(this);
-    visitor.visit((StatementNode*)this);
+    if(visitor.visitLetBefore)
+    {
+        visitor.visit(this);
+        visitor.visit((StatementNode*)this);
+    }
     
     visitor.enterNode(leftSide);
     leftSide->acceptRecursive(visitor);
@@ -124,6 +127,12 @@ void LetStatementNode::acceptRecursive(AstVisitor& visitor)
     rightSide->acceptRecursive(visitor);
     rightSide = dynamic_cast<ExpressionNode*>(visitor.lastNode());
     visitor.exitNode(rightSide);
+    
+    if(!visitor.visitLetBefore)
+    {
+        visitor.visit(this);
+        visitor.visit((StatementNode*)this);
+    }
 }
 
 void CodeBlockNode::accept(AstVisitor& visitor)

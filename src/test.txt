@@ -3,8 +3,7 @@ var
     int x
     int y
 begin
-    let y = 0
-    let y = y + 1
-    let y = y + 1
+    input x
+    let y = x
     print y
 end

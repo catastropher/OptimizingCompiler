@@ -7,6 +7,8 @@
 
 struct AstVisitor
 {
+    AstVisitor() : visitLetBefore(false) { }
+    
     virtual void visit(StatementNode* node) { }
     virtual void visit(ExpressionNode* node) { }
     virtual void visit(IntegerNode* node) { visit((ExpressionNode*)node); }
@@ -43,6 +45,12 @@ struct AstVisitor
     virtual void replaceNode(AstNode* node) { nodeStack[nodeStack.size() - 1] = node; }
     
     std::vector<AstNode*> nodeStack;
+    bool visitLetBefore;
+    
+    bool nodeReplaced(AstNode* node)
+    {
+        return nodeStack.size() != 0 && node != nodeStack[nodeStack.size() - 1];
+    }
     
     virtual ~AstVisitor()
     {
