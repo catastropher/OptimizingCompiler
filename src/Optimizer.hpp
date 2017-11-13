@@ -32,11 +32,15 @@ public:
         while(optimizeIteration())
             ++iterationCount;
         
-        printf("Total optimization passes: %d\n", iterationCount);
-        
         ast.eliminateUnusedVars();
         
+        printf("============Optimizer stats============\n");
+        printf("Total optimization passes: %d\n", iterationCount);
         expressionFolder.printStats();
+        eliminator.printStats();
+        copyPropagator.printStats();
+        varRemover.printStats();
+        printf("=======================================\n");
     }
     
 private:

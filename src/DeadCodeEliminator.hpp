@@ -12,7 +12,8 @@
 class DeadCodeEliminator : AstVisitor
 {
 public:
-    DeadCodeEliminator(CodeBlockNode* programBody_) : programBody(programBody_) { }
+    DeadCodeEliminator(CodeBlockNode* programBody_)
+        : programBody(programBody_), totalKilledStatements(0), totalKilledBlocks(0), totalKilledIfs(0) { }
     
     bool eliminateDeadCode()
     {
@@ -38,7 +39,17 @@ public:
         printf("Live statements: %d\n", (int)liveStatements.size());
         
         StatementKiller killer(programBody, liveStatements, killedStatements);
-        return killer.killDeadStatements() || success;
+        bool worked = killer.killDeadStatements() || success;
+        totalKilledStatements += killer.getTotalKilledStatements();
+        
+        return worked;
+    }
+    
+    void printStats()
+    {
+        printf("Total always false if's replaced: %d\n", totalKilledIfs);
+        printf("Total dead statements eliminated: %d\n", totalKilledStatements);
+        printf("Total dead blocks eliminated: %d\n", totalKilledBlocks);
     }
     
 private:    
@@ -48,6 +59,8 @@ private:
         auto killedBlocks = basicBlockEliminator.eliminateDeadBlocks();
         
         killedStatements.insert(killedBlocks.begin(), killedBlocks.end());
+        
+        totalKilledBlocks += killedBlocks.size();
     }
     
     void scheduleNode(StatementNode* node)
@@ -83,6 +96,7 @@ private:
             {
                 node->markAsDead();
                 success = true;
+                ++totalKilledIfs;
             }
         }
     }
@@ -92,5 +106,8 @@ private:
     std::set<StatementNode*> killedStatements;
     std::queue<StatementNode*> workQueue;
     bool success;
+    int totalKilledStatements;
+    int totalKilledBlocks;
+    int totalKilledIfs;
 };
 

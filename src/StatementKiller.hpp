@@ -12,15 +12,24 @@ public:
     StatementKiller(CodeBlockNode* programBody_, std::set<StatementNode*>& liveStatements_, std::set<StatementNode*>& killedStatements_)
         : programBody(programBody_),
         liveStatements(liveStatements_),
-        killedStatements(killedStatements_) { }
+        killedStatements(killedStatements_),
+        totalKilledStatements(0)
+        { }
         
     bool killDeadStatements()
     {
+        totalKilledStatements = 0;
         success = false;
         programBody->acceptRecursive(*this);
         return success;
     }
     
+    int getTotalKilledStatements()
+    {
+        return totalKilledStatements;
+    }
+    
+private:
     void visit(StatementNode* node)
     {
         if(dynamic_cast<CodeBlockNode*>(node))
@@ -33,6 +42,7 @@ public:
         {
             node->markAsDead();
             success = true;
+            ++totalKilledStatements;
         }
     }
     
@@ -42,6 +52,12 @@ public:
             return;
         
         node->markAsDead();
+        
+        for(StatementNode* s : node->statements)
+        {
+            if(!s->markedAsDead)
+                ++totalKilledStatements;
+        }
     }
     
     void visit(LetStatementNode* node)
@@ -63,13 +79,14 @@ public:
             
             node->markAsDead();
             success = true;
+            ++totalKilledStatements;
         }
     }
     
-private:
     CodeBlockNode* programBody;
     std::set<StatementNode*>& liveStatements;
     std::set<StatementNode*>& killedStatements;
     bool success;
+    int totalKilledStatements;
 };
 

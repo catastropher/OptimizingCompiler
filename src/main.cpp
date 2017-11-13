@@ -49,8 +49,6 @@ void compileSource(std::string inputFile, std::string outputFile)
 
 int main(int argc, char* argv[])
 {
-    printf("Here in %s\n", __FUNCTION__);
-    
     if(argc != 3)
     {
         std::cout << "Usage: " << argv[0] << " [inputFile] [outputFile]" << std::endl;

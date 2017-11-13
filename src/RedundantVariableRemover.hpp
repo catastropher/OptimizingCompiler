@@ -7,7 +7,7 @@
 class RedundantVariableRemover
 {
 public:
-    RedundantVariableRemover(CodeBlockNode* programBody_) : programBody(programBody_) { }
+    RedundantVariableRemover(CodeBlockNode* programBody_) : programBody(programBody_), totalRemoved(0) { }
     
     bool removeRedundantVariables()
     {
@@ -22,14 +22,26 @@ public:
             if(count[var.first] == 1 && !inputNode)
             {
                 VariableReplacer replacer(programBody, var.first, var.first->definitionNode->rightSide);
-                success |= replacer.replaceVars();
+                bool worked = replacer.replaceVars();
+                
+                if(worked)
+                {
+                    ++totalRemoved;
+                    success = true;
+                }
             }
         }
         
         return success;
     }
     
+    void printStats()
+    {
+        printf("Total redundant vars removed: %d\n", totalRemoved);
+    }
+    
 private:
     CodeBlockNode* programBody;
+    int totalRemoved;
 };
 

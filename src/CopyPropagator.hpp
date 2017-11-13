@@ -7,7 +7,7 @@
 class CopyPropagator : AstVisitor
 {
 public:
-    CopyPropagator(CodeBlockNode* programBody_, Ast& ast_) : programBody(programBody_), ast(ast_) { }
+    CopyPropagator(CodeBlockNode* programBody_, Ast& ast_) : programBody(programBody_), ast(ast_), totalPropagated(0) { }
     
     bool propagateCopies()
     {
@@ -16,12 +16,18 @@ public:
         return success;
     }
     
+    void printStats()
+    {
+        printf("Total variables propogated: %d\n", totalPropagated);
+    }
+    
 private:
     void visit(PhiNode* node)
     {        
         if(node->joinNodes.size() == 1)
         {
             replaceNode(ast.addSsaIntVarFactorNode(*node->joinNodes.begin()));
+            ++totalPropagated;
             success = true;
         }
     }
@@ -36,6 +42,7 @@ private:
         {
             VariableReplacer replacer(programBody, lValue, var);
             success |= replacer.replaceVars();
+            ++totalPropagated;
             //node->markAsDead();
         }
     }
@@ -43,5 +50,6 @@ private:
     CodeBlockNode* programBody;
     bool success;
     Ast& ast;
+    int totalPropagated;
 };
 
