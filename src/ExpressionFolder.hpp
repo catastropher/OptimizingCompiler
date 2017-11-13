@@ -69,6 +69,7 @@ private:
         {
             replaceNode(ast.newIntegerNode(node->ssaLValue->value));
             success = true;
+            ++totalConstantsPropogated;
         }
     }
     

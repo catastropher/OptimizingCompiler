@@ -321,7 +321,7 @@ void InputIntNode::acceptRecursive(AstVisitor& v)
 
 void Ast::eliminateUnusedVars()
 {
-    VariableUsageCounter counter(body);
+    VariableUsageCounter counter(body, true);
     auto count = counter.countVarUses();
     std::map<IntDeclNode*, int> intVarCounts;
     

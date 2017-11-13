@@ -55,8 +55,8 @@ private:
         
         for(StatementNode* s : node->statements)
         {
-            if(!s->markedAsDead)
-                ++totalKilledStatements;
+            killedStatements.insert(s);
+            s->accept(*this);
         }
     }
     
