@@ -1,26 +1,41 @@
 #pragma once
 
 #include "Ast.hpp"
+#include "AstVisitor.hpp"
 #include "VariableReplacer.hpp"
 #include "VariableUsageCounter.hpp"
 
-class RedundantVariableRemover
+class RedundantVariableRemover : AstVisitor
 {
 public:
     RedundantVariableRemover(CodeBlockNode* programBody_) : programBody(programBody_), totalRemoved(0) { }
     
     bool removeRedundantVariables()
     {
-        VariableUsageCounter counter(programBody);
+        VariableUsageCounter counter(programBody, true, false, false);
         auto count = counter.countVarUses();
         bool success = false;
+        
+        declNodes.clear();
+        
+        for(auto var : count)
+        {
+            declNodes[var.first->var] += var.second;
+        }
         
         for(auto var : count)
         {
             bool inputNode = dynamic_cast<InputIntNode*>(var.first->definitionNode->rightSide);
             
-            if(count[var.first] == 1 && !inputNode)
+            // Only one definition of var
+            if(declNodes[var.first->var] == 1 && !inputNode)
             {
+                hasAllSingleDefVariables = true;
+                var.first->definitionNode->rightSide->acceptRecursive(*this);
+                
+                if(!hasAllSingleDefVariables)
+                    continue;
+                
                 VariableReplacer replacer(programBody, var.first, var.first->definitionNode->rightSide);
                 bool worked = replacer.replaceVars();
                 
@@ -41,7 +56,21 @@ public:
     }
     
 private:
+    void visit(SsaIntVarFactor* node)
+    {
+        if(declNodes[node->var] > 1)
+            hasAllSingleDefVariables = false;
+    }
+    
+    void visit(OneDimensionalListFactor* node)
+    {
+        // Can't perform analysis on arrays
+        hasAllSingleDefVariables = false;
+    }
+    
+    std::map<IntDeclNode*, int> declNodes;
     CodeBlockNode* programBody;
     int totalRemoved;
+    bool hasAllSingleDefVariables;
 };
 

@@ -346,14 +346,17 @@ void Ast::eliminateUnusedVars()
 void Ast::defaultInitializeVars()
 {
     std::vector<StatementNode*> varInit;
-    
+
+    // Easter egg dB(    
     for(auto var : vars)
     {
+        int val = (var->name != "DANK" && var->name != "MEMES" ? 0 : 1337);
+        
         if(auto intVar = dynamic_cast<IntDeclNode*>(var))
         {
             varInit.push_back
             (
-                addLetStatementNode(addIntLValue(intVar), newIntegerNode(0))
+                addLetStatementNode(addIntLValue(intVar), newIntegerNode(val))
             );
         }
     }

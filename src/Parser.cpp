@@ -188,6 +188,8 @@ void Parser::parseHeader()
         else if(currentToken().type == TOK_BEGIN)
         {
             nextToken();
+            ast.addIntegerVar("DANK", -1, -1);
+            ast.addIntegerVar("MEMES", -1, -1);
             return;
         }
         else if(currentToken().type == TOK_TITLE)
@@ -414,7 +416,7 @@ ExpressionNode* Parser::parseCondition()
     return ast.newBinaryOpNode(leftSide, op, rightSide);
 }
 
-IfNode* Parser::parseIf()
+StatementNode* Parser::parseIf()
 {
     nextToken();
     
@@ -437,7 +439,35 @@ IfNode* Parser::parseIf()
         throwErrorAtCurrentLocation("Comment inside of if body leading to invalid code (comments are considered statements)");
     }
     
-    return ast.addIfNode(condition, body);
+    IfNode* ifNode = ast.addIfNode(condition, body);
+    
+    if(!dynamic_cast<GotoNode*>(body))
+    {
+        printf("WARNING: if node contains something other than goto\n");
+        
+        try
+        {
+            CodeBlockNode* codeBlock = ast.addCodeBlockNode();
+            LabelNode* skipLabel = generateTempLabel();
+            
+            codeBlock->addStatement(ifNode);
+            codeBlock->addStatement(ifNode->body);
+            codeBlock->addStatement(skipLabel);
+            
+            ifNode->invertCondition();
+            ifNode->body = ast.addGotoNode(skipLabel->name, -1, -1);
+            
+            printf("\tAutomatically fixed\n");
+            
+            return codeBlock;
+        }
+        catch(...)
+        {
+            throwErrorAtCurrentLocation("Couldn't invert if statement of node that doesn't contain goto body");
+        }
+    }
+    
+    return ifNode;
 }
 
 PromptNode* Parser::parsePrompt()

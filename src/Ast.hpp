@@ -383,6 +383,24 @@ struct IfNode : StatementNode
     void accept(AstVisitor& v);;
     virtual void acceptRecursive(AstVisitor& v);
     
+    void invertCondition()
+    {
+        auto node = dynamic_cast<BinaryOpNode*>(condition);
+        if(!node)
+            throw "Can't invert condition: not a binary of node";
+        
+        switch(node->op)
+        {
+            case TOK_LT: node->op = TOK_GE; break;
+            case TOK_LE: node->op = TOK_GT; break;
+            case TOK_EQ: node->op = TOK_NE; break;
+            case TOK_NE: node->op = TOK_EQ; break;
+            case TOK_GT: node->op = TOK_LE; break;
+            case TOK_GE: node->op = TOK_LT; break;
+            default: throw "Can't invert condition: un-invertable operator " + Token::getTokenName(node->op);
+        }
+    }
+    
     ExpressionNode* condition;
     StatementNode* body;
 };
