@@ -44,7 +44,9 @@ enum TokenType
     TOK_WHILE,
     TOK_ENDFOR,
     TOK_ENDWHILE,
-    TOK_STRING
+    TOK_STRING,
+    TOK_BOX,
+    TOK_TABLE
 };
 
 struct Token

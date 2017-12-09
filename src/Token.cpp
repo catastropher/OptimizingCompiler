@@ -25,7 +25,9 @@ static std::map<std::string, TokenType> languageKeywords =
     { "title", TOK_TITLE },
     { "to", TOK_TO },
     { "var", TOK_VAR },
-    { "while", TOK_WHILE }
+    { "while", TOK_WHILE },
+    { "box", TOK_BOX },
+    { "table", TOK_TABLE }
 };
 
 static std::map<std::string, TokenType> operators =
@@ -95,7 +97,9 @@ static std::map<TokenType, std::string> tokenNames =
     { TOK_WHILE, "while" },
     { TOK_ENDFOR, "endfor" },
     { TOK_ENDWHILE, "endwhile"},
-    { TOK_STRING, "string"}
+    { TOK_STRING, "string"},
+    { TOK_BOX, "box" },
+    { TOK_TABLE, "table" }
 };
 
 TokenType Token::getKeywordType(std::string keyword)
