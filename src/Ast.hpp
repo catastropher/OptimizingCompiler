@@ -325,6 +325,37 @@ struct OneDimensionalListLValueNode : LValueNode
     ExpressionNode* index;
 };
 
+struct TwoDimensionalListLValueNode : LValueNode
+{
+    TwoDimensionalListLValueNode(TwoDimensionalListDecl* var_, ExpressionNode* index0_, ExpressionNode* index1_)
+        : var(var_), index0(index0_), index1(index1_) { }
+        
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    FactorNode* getFactorNode(Ast& ast);
+    
+    TwoDimensionalListDecl* var;
+    ExpressionNode* index0;
+    ExpressionNode* index1;
+};
+
+struct ThreeDimensionalListLValueNode : LValueNode
+{
+    ThreeDimensionalListLValueNode(ThreeDimensionalListDecl* var_, ExpressionNode* index0_, ExpressionNode* index1_, ExpressionNode* index2_)
+        : var(var_), index0(index0_), index1(index1_), index2(index2_) { }
+        
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    FactorNode* getFactorNode(Ast& ast);
+    
+    ThreeDimensionalListDecl* var;
+    ExpressionNode* index0;
+    ExpressionNode* index1;
+    ExpressionNode* index2;
+};
+
 struct LetStatementNode : StatementNode
 {
     LetStatementNode(LValueNode* leftSide_, ExpressionNode* rightSide_) : leftSide(leftSide_), rightSide(rightSide_) { }
@@ -667,6 +698,20 @@ public:
         return newNode;
     }
     
+    TwoDimensionalListFactor* addTwoDimensionalListFactor(TwoDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1)
+    {
+        auto newNode = new TwoDimensionalListFactor(var, index0, index1);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    ThreeDimensionalListFactor* addTwoDimensionalListFactor(ThreeDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1, ExpressionNode* index2)
+    {
+        auto newNode = new ThreeDimensionalListFactor(var, index0, index1, index2);
+        addNode(newNode);
+        return newNode;
+    }
+    
     BinaryOpNode* newBinaryOpNode(ExpressionNode* left, TokenType op, ExpressionNode* right)
     {
         BinaryOpNode* newNode = new BinaryOpNode(left, op, right);
@@ -695,6 +740,20 @@ public:
         return newNode;
     }
     
+    TwoDimensionalListDecl* add2DListVar(std::string name, int line, int col, int totalElements0, int totalElements1)
+    {
+        TwoDimensionalListDecl* newNode = new TwoDimensionalListDecl(name, line, col, totalElements0, totalElements1);
+        vars.push_back(newNode);
+        return newNode;
+    }
+    
+    ThreeDimensionalListDecl* add3DListVar(std::string name, int line, int col, int totalElements0, int totalElements1, int totalElements2)
+    {
+        ThreeDimensionalListDecl* newNode = new ThreeDimensionalListDecl(name, line, col, totalElements0, totalElements1, totalElements2);
+        vars.push_back(newNode);
+        return newNode;
+    }
+    
     IntLValueNode* addIntLValue(IntDeclNode* varDecl)
     {
         IntLValueNode* newNode = new IntLValueNode(varDecl);
@@ -705,6 +764,20 @@ public:
     OneDimensionalListLValueNode* addOneDimensionalListLValueNode(OneDimensionalListDecl* var, ExpressionNode* index)
     {
         auto newNode = new OneDimensionalListLValueNode(var, index);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    TwoDimensionalListLValueNode* addTwoDimensionalListLValueNode(TwoDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1)
+    {
+        auto newNode = new TwoDimensionalListLValueNode(var, index0, index1);
+        addNode(newNode);
+        return newNode;
+    }
+    
+    ThreeDimensionalListLValueNode* addThreeDimensionalListLValueNode(ThreeDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1, ExpressionNode* index2)
+    {
+        auto newNode = new ThreeDimensionalListLValueNode(var, index0, index1, index2);
         addNode(newNode);
         return newNode;
     }
