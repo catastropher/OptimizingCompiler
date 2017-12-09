@@ -68,6 +68,18 @@ private:
         hasAllSingleDefVariables = false;
     }
     
+    void visit(TwoDimensionalListFactor* node)
+    {
+        // Can't perform analysis on arrays
+        hasAllSingleDefVariables = false;
+    }
+    
+    void visit(ThreeDimensionalListFactor* node)
+    {
+        // Can't perform analysis on arrays
+        hasAllSingleDefVariables = false;
+    }
+    
     std::map<IntDeclNode*, int> declNodes;
     CodeBlockNode* programBody;
     int totalRemoved;

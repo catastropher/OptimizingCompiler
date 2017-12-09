@@ -25,7 +25,20 @@ struct CodeGenerator : AstVisitor
             }
             else if(auto listVar = dynamic_cast<OneDimensionalListDecl*>(var))
             {
-                addLine("int " + listVar->name + + "[" + std::to_string(listVar->totalElements) + "];");
+                addLine("int " + listVar->name + "[" + std::to_string(listVar->totalElements) + "];");
+            }
+            else if(auto listVar = dynamic_cast<TwoDimensionalListDecl*>(var))
+            {
+                addLine("int " + listVar->name +
+                    "[" + std::to_string(listVar->totalElements0) + "]" + 
+                    "[" + std::to_string(listVar->totalElements1) + "];");
+            }
+            else if(auto listVar = dynamic_cast<ThreeDimensionalListDecl*>(var))
+            {
+                addLine("int " + listVar->name +
+                    "[" + std::to_string(listVar->totalElements0) + "]" +
+                    "[" + std::to_string(listVar->totalElements1) + "]" + 
+                    "[" + std::to_string(listVar->totalElements2) + "];");
             }
         }
         
