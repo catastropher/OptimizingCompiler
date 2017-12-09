@@ -188,8 +188,6 @@ void Parser::parseHeader()
         else if(currentToken().type == TOK_BEGIN)
         {
             nextToken();
-            ast.addIntegerVar("DANK", -1, -1);
-            ast.addIntegerVar("MEMES", -1, -1);
             return;
         }
         else if(currentToken().type == TOK_TITLE)

@@ -36,8 +36,6 @@ public:
         
         eliminateDeadBasicBlocks();
         
-        printf("Live statements: %d\n", (int)liveStatements.size());
-        
         StatementKiller killer(programBody, liveStatements, killedStatements);
         bool worked = killer.killDeadStatements() || success;
         totalKilledStatements += killer.getTotalKilledStatements();

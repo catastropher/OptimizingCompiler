@@ -2,6 +2,7 @@
 #include "AstVisitor.hpp"
 #include "BasicBlockBuilder.hpp"
 #include "VariableUsageCounter.hpp"
+#include "Utils.hpp"
 
 void Ast::accept(AstVisitor& v)
 {
@@ -330,16 +331,24 @@ void Ast::eliminateUnusedVars()
         intVarCounts[var.first->var] += var.second;
     }
     
+    std::vector<std::string> eliminated;
+    
     for(auto var : vars)
     {
         if(auto intVar = dynamic_cast<IntDeclNode*>(var))
         {
             if(intVarCounts[intVar] == 0)
             {
-                printf("Eliminated variable %s\n", intVar->name.c_str());
+                
                 intVar->eliminated = true;
+                eliminated.push_back(intVar->name);
             }
         }
+    }
+    
+    if(eliminated.size() != 0)
+    {
+        printf("Eliminated vars: %s\n", containerToString(eliminated).c_str());
     }
 }
 
@@ -347,16 +356,13 @@ void Ast::defaultInitializeVars()
 {
     std::vector<StatementNode*> varInit;
 
-    // Easter egg dB(    
     for(auto var : vars)
     {
-        int val = (var->name != "DANK" && var->name != "MEMES" ? 0 : 1337);
-        
         if(auto intVar = dynamic_cast<IntDeclNode*>(var))
         {
             varInit.push_back
             (
-                addLetStatementNode(addIntLValue(intVar), newIntegerNode(val))
+                addLetStatementNode(addIntLValue(intVar), newIntegerNode(0))
             );
         }
     }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include "Lexer.hpp"
 #include "File.hpp"
@@ -8,7 +9,7 @@
 #include "Error.hpp"
 #include "Optimizer.hpp"
 
-void compileSource(std::string inputFile, std::string outputFile)
+void compileSource(std::string inputFile, std::string outputFile, bool enableOptimizations, bool printResult)
 {
     std::string input;
     
@@ -25,47 +26,71 @@ void compileSource(std::string inputFile, std::string outputFile)
         ast.defaultInitializeVars();
         ast.splitIntoBasicBlocks();
         
-        Optimizer optimizer(ast.getBody(), ast);
-        optimizer.optimize();
+        if(enableOptimizations)
+        {
+            Optimizer optimizer(ast.getBody(), ast);
+            optimizer.optimize();
+        }
         
         CodeGenerator gen;
         gen.genCode(ast);
         
-        for(auto line : gen.output)
+        writeFileContents(outputFile, gen.output);
+        
+        if(printResult)
         {
-            std::cout << line << "\n";
+            for(auto line : gen.output)
+            {
+                std::cout << line << "\n";
+            }
         }
         
-        std::cout << "------------------\n";
+        std::cout << "\n";
         std::cout << "Compilation successful (written to " << outputFile << ")\n"; 
-        
-        writeFileContents(outputFile, gen.output);
     }
     catch(CompileError& err)
     {
         err.print(input);
+        throw;
     }
 }
 
 int main(int argc, char* argv[])
 {
-    if(argc != 3)
+    bool enableOptimizations = true;
+    bool printResult = false;
+    
+    if(argc < 3)
     {
         std::cout << "Usage: " << argv[0] << " [inputFile] [outputFile]" << std::endl;
         return -1;
     }
     
+    for(int i = 1; i < argc; ++i)
+    {
+        if(strcmp(argv[i], "--noopt") == 0)
+            enableOptimizations = false;
+        else if(strcmp(argv[i], "--print") == 0)
+            printResult = true;
+    }
+    
     try
     {
-        compileSource(argv[1], argv[2]);
+        compileSource(argv[1], argv[2], enableOptimizations, printResult);
     }
     catch(const char* str)
     {
         std::cerr << str << std::endl;
+        return -1;
     }
     catch(std::string str)
     {
         std::cerr << str << std::endl;
+        return -1;
+    }
+    catch(...)
+    {
+        return -1;
     }
     
 	return 0;
