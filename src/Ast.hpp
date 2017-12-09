@@ -215,6 +215,27 @@ struct OneDimensionalListDecl : VarDeclNode
     int totalElements;
 };
 
+struct TwoDimensionalListDecl : VarDeclNode
+{
+    TwoDimensionalListDecl(std::string name_, int line_, int col_, int totalElements0_, int totalElements1_)
+        : VarDeclNode(name_, line_, col_),
+        totalElements0(totalElements0_), totalElements1(totalElements1_) { }
+        
+    int totalElements0;
+    int totalElements1;
+};
+
+struct ThreeDimensionalListDecl : VarDeclNode
+{
+    ThreeDimensionalListDecl(std::string name_, int line_, int col_, int totalElements0_, int totalElements1_, int totalElements2_)
+        : VarDeclNode(name_, line_, col_),
+        totalElements0(totalElements0_), totalElements1(totalElements1_), totalElements2(totalElements2_) { }
+        
+    int totalElements0;
+    int totalElements1;
+    int totalElements2;
+};
+
 struct StatementNode : AstNode
 {
     StatementNode() : markedAsDead(false) { }
