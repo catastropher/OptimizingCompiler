@@ -62,7 +62,27 @@ private:
         forceAddCurrentStatement();
     }
     
+    void visit(TwoDimensionalListFactor* node)
+    {
+        forceAddCurrentStatement();
+    }
+    
+    void visit(ThreeDimensionalListFactor* node)
+    {
+        forceAddCurrentStatement();
+    }
+    
     void visit(OneDimensionalListLValueNode* node)
+    {
+        forceAddCurrentStatement();
+    }
+    
+    void visit(TwoDimensionalListLValueNode* node)
+    {
+        forceAddCurrentStatement();
+    }
+   
+   void visit(ThreeDimensionalListLValueNode* node)
     {
         forceAddCurrentStatement();
     }

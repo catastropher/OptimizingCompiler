@@ -145,6 +145,16 @@ void OneDimensionalListLValueNode::accept(AstVisitor& visitor)
     visitor.visit(this);
 }
 
+void TwoDimensionalListLValueNode::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+
+void ThreeDimensionalListLValueNode::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+
 void EndNode::accept(AstVisitor& visitor)
 {
     visitor.visit(this);
@@ -302,6 +312,41 @@ void OneDimensionalListLValueNode::acceptRecursive(AstVisitor& v)
     v.exitNode(index);
 }
 
+void TwoDimensionalListLValueNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+    
+    v.enterNode(index0);
+    index0->acceptRecursive(v);
+    index0 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index0);
+    
+    v.enterNode(index1);
+    index1->acceptRecursive(v);
+    index1 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index1);
+}
+
+void ThreeDimensionalListLValueNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+    
+    v.enterNode(index0);
+    index0->acceptRecursive(v);
+    index0 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index0);
+    
+    v.enterNode(index1);
+    index1->acceptRecursive(v);
+    index1 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index1);
+    
+    v.enterNode(index2);
+    index2->acceptRecursive(v);
+    index2 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index2);
+}
+
 void PromptNode::acceptRecursive(AstVisitor& v)
 {
     v.visit(this);
@@ -428,5 +473,15 @@ FactorNode* IntLValueNode::getFactorNode(Ast& ast)
 FactorNode* OneDimensionalListLValueNode::getFactorNode(Ast& ast)
 {
     return ast.addOneDimensionalListFactor(var, index);
+}
+
+FactorNode* TwoDimensionalListLValueNode::getFactorNode(Ast& ast)
+{
+    return ast.addTwoDimensionalListFactor(var, index0, index1);
+}
+
+FactorNode* ThreeDimensionalListLValueNode::getFactorNode(Ast& ast)
+{
+    return ast.addThreeDimensionalListFactor(var, index0, index1, index2);
 }
 

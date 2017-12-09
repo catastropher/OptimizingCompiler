@@ -4,6 +4,6 @@ var
     box[20, 20, 20] blah3
 begin
 
-    print blah3[1, 2, 3]
+    let blah[1, 2] = 50
 
 end
