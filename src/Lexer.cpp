@@ -176,7 +176,7 @@ bool Lexer::lexComparisonOperator()
 
 bool Lexer::lexBracketOperator()
 {
-    if(*begin != '[' && *begin != ']' && *begin != '(' && *begin != ')')
+    if(*begin != '[' && *begin != ']' && *begin != '(' && *begin != ')' && *begin != ',')
         return false;
     
     std::string op = std::string(begin, begin + 1);

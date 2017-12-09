@@ -47,7 +47,8 @@ static std::map<std::string, TokenType> operators =
     { "*", TOK_MUL },
     { "%", TOK_MOD },
     { "(", TOK_LPAREN },
-    { ")", TOK_RPAREN }
+    { ")", TOK_RPAREN },
+    { ",", TOK_COMMA }
 };
 
 bool Token::isComparisonOperator(TokenType type)
@@ -99,7 +100,8 @@ static std::map<TokenType, std::string> tokenNames =
     { TOK_ENDWHILE, "endwhile"},
     { TOK_STRING, "string"},
     { TOK_BOX, "box" },
-    { TOK_TABLE, "table" }
+    { TOK_TABLE, "table" },
+    { TOK_COMMA, "," }
 };
 
 TokenType Token::getKeywordType(std::string keyword)

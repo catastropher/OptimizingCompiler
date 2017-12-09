@@ -1,19 +1,17 @@
-title moving edge by x. shen modified t. o'neil 4.1.2013
+title sample loop, t. oneil, 11.1.2011
 var
-   int x
-   int y
+box[512, 512, 512] A
+int global
+int i
+int j
+int k
 begin
-    let x = 5
-    let y = 60
-    let x = 3 * (x * x + y - x)
-    
-    let x = y - x
-    
-    
-    if(y > 60) then
-        let y = y * 3
-    if(y > 60) then
-        let y = y * 3
-        
-    print x + y 
+for i = 0 to 511 by 1
+for j = 1 to 512 by 1
+for k = 0 to 511 by 1
+let global = global + i * j * k
+let A[i + 1, j, k] = A[i, j - 1, k] + A[i, j, k + 3]
+endfor
+endfor
+endfor
 end
