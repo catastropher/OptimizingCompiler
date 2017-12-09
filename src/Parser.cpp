@@ -406,6 +406,33 @@ LValueNode* Parser::parseLValue()
         
         return ast.addTwoDimensionalListLValueNode(listVar, index0, index1);
     }
+    
+    if(ThreeDimensionalListDecl* listVar = dynamic_cast<ThreeDimensionalListDecl*>(var))
+    {
+        if(!arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " has array type - expected '['");
+        
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        ExpressionNode* index0 = parseExpression();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        
+        ExpressionNode* index1 = parseExpression();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        
+        ExpressionNode* index2 = parseExpression();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        return ast.addThreeDimensionalListLValueNode(listVar, index0, index1, index2);
+    }
         
     throwErrorAtCurrentLocation("Variable " + name + " is not of integer type");
     return nullptr;

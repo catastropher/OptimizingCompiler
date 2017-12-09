@@ -2,8 +2,12 @@ var
     table[5, 6] blah
     table[5, 6] blah2
     box[20, 20, 20] blah3
+    int x
 begin
 
-    let blah[1, 2] = 50
-
+    let blah3[1, 2, 50] = 50
+    
+    for x = 0 to 50 by 3
+        let blah3[1, 2, 50] = blah3[1, 2, 50] + 1
+    endfor
 end
