@@ -173,6 +173,39 @@ bool Parser::parseVarDecl()
         return true;
     }
     
+    if(currentToken().type == TOK_BOX)
+    {
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        expectType(TOK_NUMBER);        
+        int totalElements0 = atoi(currentToken().value.c_str());
+        nextToken();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        expectType(TOK_NUMBER);        
+        int totalElements1 = atoi(currentToken().value.c_str());
+        nextToken();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        expectType(TOK_NUMBER);        
+        int totalElements2 = atoi(currentToken().value.c_str());
+        nextToken();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        expectType(TOK_ID);
+        
+        ast.add3DListVar(currentToken().value, currentToken().line, currentToken().col, totalElements0, totalElements1, totalElements2);
+        nextToken();
+        
+        return true;
+    }
+    
     return false;
 }
 
