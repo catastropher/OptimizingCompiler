@@ -112,6 +112,17 @@ struct CodeGenerator : AstVisitor
         push(node->var->name + "[" + index + "]");
     }
     
+    void visit(TwoDimensionalListFactor* node)
+    {
+        node->index1->accept(*this);
+        node->index0->accept(*this);
+        
+        std::string index0 = pop();
+        std::string index1 = pop();
+        
+        push(node->var->name + "[" + index0 + "][" + index1 + "]");
+    }
+    
     void visit(IntLValueNode* node)
     {
         push(node->var->name);
@@ -123,6 +134,17 @@ struct CodeGenerator : AstVisitor
         
         std::string index = pop();
         push(node->var->name + "[" + index + "]");
+    }
+    
+    void visit(TwoDimensionalListLValueNode* node)
+    {
+        node->index1->accept(*this);
+        node->index0->accept(*this);
+        
+        std::string index0 = pop();
+        std::string index1 = pop();
+        
+        push(node->var->name + "[" + index0 + "][" + index1 + "]");
     }
     
     void visit(ExpressionNode* node)

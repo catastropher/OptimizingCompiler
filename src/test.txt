@@ -4,4 +4,6 @@ var
     box[20, 20, 20] blah3
 begin
 
+    print blah[0, 0]
+
 end
