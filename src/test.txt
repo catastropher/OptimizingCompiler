@@ -1,13 +1,9 @@
+title loop norm example 3 by t. oneil 4.30.2013
 var
-    table[5, 6] blah
-    table[5, 6] blah2
-    box[20, 20, 20] blah3
-    int x
+   int i
+   list[1000] a
 begin
-
-    let blah3[1, 2, 50] = 50
-    
-    for x = 0 to 50 by 3
-        let blah3[1, 2, 50] = blah3[1, 2, 50] + 1
-    endfor
+   for i = 1000 to 1 by -2
+      let a[i] = a[i] + 5
+   endfor
 end

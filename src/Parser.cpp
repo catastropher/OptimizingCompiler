@@ -3,6 +3,7 @@
 #include "Parser.hpp"
 #include "Lexer.hpp"
 #include "Error.hpp"
+#include "ForLoopNormalizer.hpp"
 
 Parser::Parser(std::vector<Token>& tokens_)
     : tokens(&tokens_),
@@ -498,7 +499,10 @@ ForLoopNode* Parser::parseForLoop()
     CodeBlockNode* body = parseCodeBlock(TOK_ENDFOR);
     nextToken();
     
-    return ast.addForLoopNode(var, lower, upper, inc, body);
+    ForLoopNode* node = ast.addForLoopNode(var, lower, upper, inc, body);
+    ForLoopNormalizer normalizer(node, ast);
+    
+    return node;
 }
 
 WhileLoopNode* Parser::parseWhileLoop()
