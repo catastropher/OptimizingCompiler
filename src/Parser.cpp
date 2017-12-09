@@ -97,6 +97,32 @@ FactorNode* Parser::parseVarFactor()
         
         newNode = ast.addTwoDimensionalListFactor(listVar, index0, index1);
     }
+    else if(ThreeDimensionalListDecl* listVar = dynamic_cast<ThreeDimensionalListDecl*>(var))
+    {
+        if(!arrayAccess)
+            throwErrorAtCurrentLocation("Variable " + name + " has array type - expected '['");
+        
+        nextToken();
+        expectType(TOK_LSQUARE_BRACKET);
+        nextToken();
+        
+        ExpressionNode* index0 = parseExpression();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        
+        ExpressionNode* index1 = parseExpression();
+        
+        expectType(TOK_COMMA);
+        nextToken();
+        
+        ExpressionNode* index2 = parseExpression();
+        
+        expectType(TOK_RSQUARE_BRACKET);
+        nextToken();
+        
+        newNode = ast.addThreeDimensionalListFactor(listVar, index0, index1, index2);
+    }
     else
     {
         throwErrorAtCurrentLocation("Variable " + name + " does not have integer type");

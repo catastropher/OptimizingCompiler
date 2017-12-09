@@ -705,7 +705,7 @@ public:
         return newNode;
     }
     
-    ThreeDimensionalListFactor* addTwoDimensionalListFactor(ThreeDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1, ExpressionNode* index2)
+    ThreeDimensionalListFactor* addThreeDimensionalListFactor(ThreeDimensionalListDecl* var, ExpressionNode* index0, ExpressionNode* index1, ExpressionNode* index2)
     {
         auto newNode = new ThreeDimensionalListFactor(var, index0, index1, index2);
         addNode(newNode);

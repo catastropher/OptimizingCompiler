@@ -75,6 +75,30 @@ void TwoDimensionalListFactor::acceptRecursive(AstVisitor& v)
     v.exitNode(index1);
 }
 
+void ThreeDimensionalListFactor::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+
+void ThreeDimensionalListFactor::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+    
+    v.enterNode(index0);
+    index0->acceptRecursive(v);
+    index0 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index0);
+    
+    v.enterNode(index1);
+    index1->acceptRecursive(v);
+    index1 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index1);
+    
+    v.enterNode(index2);
+    index2->acceptRecursive(v);
+    index2 = dynamic_cast<ExpressionNode*>(v.lastNode());
+    v.exitNode(index2);
+}
 
 void BinaryOpNode::accept(AstVisitor& visitor)
 {
