@@ -1,17 +1,7 @@
-title sample loop, t. oneil, 11.1.2011
 var
-box[512, 512, 512] A
-int global
-int i
-int j
-int k
+    table[5, 6] blah
+    table[5, 6] blah2
+    box[20, 20, 20] blah3
 begin
-for i = 0 to 511 by 1
-for j = 1 to 512 by 1
-for k = 0 to 511 by 1
-let global = global + i * j * k
-let A[i + 1, j, k] = A[i, j - 1, k] + A[i, j, k + 3]
-endfor
-endfor
-endfor
+
 end
