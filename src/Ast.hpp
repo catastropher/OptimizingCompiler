@@ -61,6 +61,8 @@ struct InputIntNode : FactorNode
 };
 
 struct OneDimensionalListDecl;
+struct TwoDimensionalListDecl;
+struct ThreeDimensionalListDecl;
 
 struct OneDimensionalListFactor : FactorNode
 {
@@ -72,6 +74,33 @@ struct OneDimensionalListFactor : FactorNode
     
     OneDimensionalListDecl* var;
     ExpressionNode* index;
+};
+
+struct TwoDimensionalListFactor : FactorNode
+{
+    TwoDimensionalListFactor(TwoDimensionalListDecl* var_, ExpressionNode* index0_, ExpressionNode* index1_)
+        : var(var_), index0(index0_), index1(index1_) { }
+    
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    TwoDimensionalListDecl* var;
+    ExpressionNode* index0;
+    ExpressionNode* index1;
+};
+
+struct ThreeDimensionalListFactor : FactorNode
+{
+    ThreeDimensionalListFactor(ThreeDimensionalListDecl* var_, ExpressionNode* index0_, ExpressionNode* index1_, ExpressionNode* index2_)
+        : var(var_), index0(index0_), index1(index1_), index2(index2_) { }
+    
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    ThreeDimensionalListDecl* var;
+    ExpressionNode* index0;
+    ExpressionNode* index1;
+    ExpressionNode* index2;
 };
 
 struct BinaryOpNode : ExpressionNode
