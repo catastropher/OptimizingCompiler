@@ -14,10 +14,14 @@ struct AstVisitor
     virtual void visit(IntegerNode* node) { visit((ExpressionNode*)node); }
     virtual void visit(IntVarFactor* node) { visit((ExpressionNode*)node); }
     virtual void visit(OneDimensionalListFactor* node) { }
+    virtual void visit(TwoDimensionalListFactor* node) { }
+    virtual void visit(ThreeDimensionalListFactor* node) { }
     virtual void visit(BinaryOpNode* node) { visit((ExpressionNode*)node); }
     virtual void visit(UnaryOpNode* node) { visit((ExpressionNode*)node); }
     virtual void visit(IntLValueNode* node) { }
     virtual void visit(OneDimensionalListLValueNode* node) { }
+    virtual void visit(TwoDimensionalListLValueNode* node) { }
+    virtual void visit(ThreeDimensionalListLValueNode* node) { }
     virtual void visit(LetStatementNode* node) { }
     virtual void visit(CodeBlockNode* node) { }
     virtual void visit(BasicBlockNode* node) { }
