@@ -8,8 +8,6 @@ class ForLoopNormalizer : AstVisitor
 public:
     ForLoopNormalizer(ForLoopNode* forNode_, Ast& ast_) : forNode(forNode_), ast(ast_)
     {
-        printf("start\n");
-        
         auto varLValue = dynamic_cast<IntLValueNode*>(forNode->var);
         if(!varLValue)
             return;
@@ -28,8 +26,6 @@ public:
         {
             return;
         }
-        
-        printf("HERE\n");
         
         bool normalized = true;
         

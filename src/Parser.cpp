@@ -4,6 +4,7 @@
 #include "Lexer.hpp"
 #include "Error.hpp"
 #include "ForLoopNormalizer.hpp"
+#include "Polynomial.hpp"
 
 Parser::Parser(std::vector<Token>& tokens_)
     : tokens(&tokens_),
@@ -71,6 +72,10 @@ FactorNode* Parser::parseVarFactor()
         nextToken();
         
         ExpressionNode* index = parseExpression();
+        
+        PolynomialBuilder builder;
+        printf("Polynomial: ");
+        builder.toPolynomial(index).print();
         
         expectType(TOK_RSQUARE_BRACKET);
         nextToken();
