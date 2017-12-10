@@ -9,6 +9,7 @@
 #include <list>
 
 #include "Token.hpp"
+#include "Polynomial.hpp"
 
 struct AstVisitor;
 
@@ -41,6 +42,26 @@ struct IntegerNode : FactorNode
     virtual void acceptRecursive(AstVisitor& v);
     
     int value;
+};
+
+struct PolynomialNode : FactorNode
+{
+    PolynomialNode(Polynomial poly_) : poly(poly_) { }
+    
+    int tryEvaluate()
+    {
+        if(poly.onlyConstant())
+        {
+            return poly.coeff["constant"];
+        }
+        
+        throw "Non constant poly";
+    }
+    
+    void accept(AstVisitor& v);
+    virtual void acceptRecursive(AstVisitor& v);
+    
+    Polynomial poly;
 };
 
 struct IntDeclNode;
@@ -909,6 +930,13 @@ public:
         }
         
         return nullptr;
+    }
+    
+    PolynomialNode* addPolynomialNode(Polynomial p)
+    {
+        auto newNode = new PolynomialNode(p);
+        addNode(newNode);
+        return newNode;
     }
     
     PhiNode* addPhiNode(std::set<SsaIntLValueNode*> joinNodes)

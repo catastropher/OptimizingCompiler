@@ -30,6 +30,16 @@ void IntegerNode::acceptRecursive(AstVisitor& v)
     v.visit(this);
 }
 
+void PolynomialNode::accept(AstVisitor& visitor)
+{
+    visitor.visit(this);
+}
+
+void PolynomialNode::acceptRecursive(AstVisitor& v)
+{
+    v.visit(this);
+}
+
 void IntVarFactor::accept(AstVisitor& visitor)
 {
     visitor.visit(this);

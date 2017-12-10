@@ -73,10 +73,6 @@ FactorNode* Parser::parseVarFactor()
         
         ExpressionNode* index = parseExpression();
         
-        PolynomialBuilder builder;
-        printf("Polynomial: ");
-        builder.toPolynomial(index).print();
-        
         expectType(TOK_RSQUARE_BRACKET);
         nextToken();
         

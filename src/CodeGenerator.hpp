@@ -104,6 +104,33 @@ struct CodeGenerator : AstVisitor
         push(node->var->name);
     }
     
+    void visit(PolynomialNode* node)
+    {
+        std::string res;
+        
+        bool first = true;
+        
+        for(auto c : node->poly.coeff)
+        {
+            if(!first)
+                res += " + ";
+            
+            first = false;
+            
+            if(c.first != "constant")
+            {
+                if(c.second != 1)
+                    res += std::to_string(c.second) + " * ";
+                
+                res += c.first;
+            }
+            else
+                res += std::to_string(c.second);
+        }
+        
+        push("(" + res + ")");
+    }
+    
     void visit(OneDimensionalListFactor* node)
     {
         node->index->accept(*this);

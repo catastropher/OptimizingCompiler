@@ -9,9 +9,11 @@ struct AstVisitor
 {
     AstVisitor() : visitLetBefore(false) { }
     
+    virtual void visit(AstNode* node) { }
     virtual void visit(StatementNode* node) { }
     virtual void visit(ExpressionNode* node) { }
     virtual void visit(IntegerNode* node) { visit((ExpressionNode*)node); }
+    virtual void visit(PolynomialNode* node) { visit((ExpressionNode*)node); }
     virtual void visit(IntVarFactor* node) { visit((ExpressionNode*)node); }
     virtual void visit(OneDimensionalListFactor* node) { }
     virtual void visit(TwoDimensionalListFactor* node) { }

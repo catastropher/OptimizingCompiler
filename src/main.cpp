@@ -8,6 +8,7 @@
 #include "CodeGenerator.hpp"
 #include "Error.hpp"
 #include "Optimizer.hpp"
+#include "PolynomialSimplifier.hpp"
 
 void compileSource(std::string inputFile, std::string outputFile, bool enableOptimizations, bool printResult)
 {
@@ -31,6 +32,8 @@ void compileSource(std::string inputFile, std::string outputFile, bool enableOpt
             Optimizer optimizer(ast.getBody(), ast);
             optimizer.optimize();
         }
+        
+        PolynomialSimplifier polySimplifier(ast, ast.getBody());
         
         CodeGenerator gen;
         gen.genCode(ast);
